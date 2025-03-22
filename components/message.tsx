@@ -17,6 +17,7 @@ import {
   StopCircle,
 } from "lucide-react";
 import { SpinnerIcon } from "./icons";
+import { SourcePreview } from "./source-preview";
 
 interface ReasoningPart {
   type: "reasoning";
@@ -75,7 +76,7 @@ export function ReasoningMessagePart({
               "cursor-pointer rounded-full dark:hover:bg-zinc-800 hover:bg-zinc-200",
               {
                 "dark:bg-zinc-800 bg-zinc-200": isExpanded,
-              },
+              }
             )}
             onClick={() => {
               setIsExpanded(!isExpanded);
@@ -106,7 +107,7 @@ export function ReasoningMessagePart({
                 <Markdown key={detailIndex}>{detail.text}</Markdown>
               ) : (
                 "<redacted>"
-              ),
+              )
             )}
           </motion.div>
         )}
@@ -125,6 +126,7 @@ const PurePreviewMessage = ({
   status: "error" | "submitted" | "streaming" | "ready";
   isLatestMessage: boolean;
 }) => {
+  const sources = message.parts?.filter((part) => part.type === "source");
   return (
     <AnimatePresence key={message.id}>
       <motion.div
@@ -137,7 +139,7 @@ const PurePreviewMessage = ({
         <div
           className={cn(
             "flex gap-4 w-full group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl",
-            "group-data-[role=user]/message:w-fit",
+            "group-data-[role=user]/message:w-fit"
           )}
         >
           {message.role === "assistant" && (
@@ -223,6 +225,13 @@ const PurePreviewMessage = ({
                   return null;
               }
             })}
+            {sources && sources.length > 0 && (
+              <div className="flex gap-2 flex-wrap">
+                {sources.map((source) => (
+                  <SourcePreview key={source.source.id} source={source} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
