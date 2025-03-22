@@ -31,6 +31,7 @@ export default function Chat() {
     ) {
       setSelectedModel("gemini-2.0-flash");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeButton]);
 
   const {

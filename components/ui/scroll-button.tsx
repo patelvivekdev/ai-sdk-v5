@@ -16,7 +16,6 @@ export type ScrollButtonProps = {
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 function ScrollButton({
-  scrollRef,
   containerRef,
   className,
   threshold = 100,
