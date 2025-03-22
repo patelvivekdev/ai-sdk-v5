@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { DeployButton } from "./deploy-button";
-import { XAiIcon } from "./icons";
+import Image from "next/image";
 
 export const Header = () => {
   return (
@@ -53,15 +52,17 @@ export const Header = () => {
               <Link
                 className="flex flex-row items-end gap-2"
                 target="_blank"
-                href="https://x.ai"
+                href="https://ai.google.dev/"
               >
-                <XAiIcon size={18} />
+                <Image
+                  src="/gemini-logo.png"
+                  height={20}
+                  width={20}
+                  alt="gemini logo"
+                />
               </Link>
             </div>
           </span>
-        </div>
-        <div className="flex flex-row items-center gap-2 shrink-0">
-          <DeployButton />
         </div>
       </div>
     </div>

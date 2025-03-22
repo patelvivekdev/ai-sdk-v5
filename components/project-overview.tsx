@@ -2,14 +2,17 @@ import NextLink from "next/link";
 export const ProjectOverview = () => {
   return (
     <div className="flex flex-col items-center justify-end">
-      <h1 className="text-3xl font-semibold mb-4">Vercel{" "}<span className="text-zinc-500">+</span>{" "}xAI Chatbot</h1>
+      <h1 className="text-3xl font-semibold mb-4">
+        Vercel <span className="text-zinc-500">+</span> Gemini{" "}
+        <span className="text-zinc-500">+</span> AI SDK
+      </h1>
       <p className="text-center">
-        This starter project uses <Link href="https://x.ai">xAI</Link> with
-        the <Link href="https://sdk.vercel.ai/docs">AI SDK</Link> via the{" "}
-        <Link href="https://vercel.com/marketplace/xai">
-          Vercel Marketplace
-        </Link>
-        .
+        This starter project uses{" "}
+        <Link href="https://ai.google.dev/">Gemini</Link> with the{" "}
+        <Link href="https://sdk.vercel.ai/docs">AI SDK</Link>.
+      </p>
+      <p className="text-center mt-4">
+        Explore more about our project and its features.
       </p>
     </div>
   );

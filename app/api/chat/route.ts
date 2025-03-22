@@ -1,5 +1,4 @@
 import { model, type modelID } from "@/ai/providers";
-import { weatherTool } from "@/ai/tools";
 import { streamText, type UIMessage } from "ai";
 
 // Allow streaming responses up to 30 seconds
@@ -10,18 +9,19 @@ export async function POST(req: Request) {
     messages,
     selectedModel,
   }: { messages: UIMessage[]; selectedModel: modelID } = await req.json();
+  try {
+    const result = streamText({
+      model: model.languageModel(selectedModel),
+      system: "You are a helpful assistant.",
+      messages,
+    });
 
-  const result = streamText({
-    model: model.languageModel(selectedModel),
-    system: "You are a helpful assistant.",
-    messages,
-    tools: {
-      getWeather: weatherTool,
-    },
-    experimental_telemetry: {
-      isEnabled: true,
-    },
-  });
-
-  return result.toDataStreamResponse({ sendReasoning: true });
+    return result.toDataStreamResponse({
+      sendReasoning: true,
+      sendSources: true,
+    });
+  } catch (error) {
+    console.error("Error in POST request:", error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }

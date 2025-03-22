@@ -1,6 +1,6 @@
 import type { Message as TMessage } from "ai";
 import { Message } from "./message";
-import { useScrollToBottom } from "@/lib/hooks/use-scroll-to-bottom";
+import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 
 export const Messages = ({
   messages,
@@ -17,7 +17,7 @@ export const Messages = ({
       className="flex-1 h-full space-y-4 overflow-y-auto py-8"
       ref={containerRef}
     >
-      <div className="max-w-xl mx-auto pt-8">
+      <div className="max-w-3xl mx-auto pt-8">
         {messages.map((m, i) => (
           <Message
             key={i}

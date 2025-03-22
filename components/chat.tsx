@@ -2,14 +2,37 @@
 
 import type { modelID } from "@/ai/providers";
 import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
-import { Textarea } from "./textarea";
+import { useState, useEffect } from "react";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "./messages";
 import { Header } from "./header";
+import { MultiModalTextarea } from "./textarea";
 
 export default function Chat() {
-  const [selectedModel, setSelectedModel] = useState<modelID>("grok-2-1212");
+  const [selectedModel, setSelectedModel] =
+    useState<modelID>("gemini-2.0-flash");
+  const [activeButton, setActiveButton] = useState<
+    "none" | "deepSearch" | "think"
+  >("none");
+
+  // Update model when activeButton changes
+  useEffect(() => {
+    if (activeButton === "deepSearch") {
+      setSelectedModel("gemini-with-search");
+    } else if (activeButton === "think") {
+      // Always set a default thinking model when switching to think mode
+      setSelectedModel("gemini-2.0-thinking");
+    } else if (
+      activeButton === "none" &&
+      (selectedModel === "gemini-with-search" ||
+        selectedModel === "gemini-2.0-thinking" ||
+        selectedModel === "deepseek-r1-thinking" ||
+        selectedModel === "deepseek-r1-llama-thinking")
+    ) {
+      setSelectedModel("gemini-2.0-flash");
+    }
+  }, [activeButton]);
+
   const {
     messages,
     input,
@@ -19,7 +42,6 @@ export default function Chat() {
     status,
     stop,
   } = useChat({
-    maxSteps: 5,
     body: {
       selectedModel,
     },
@@ -33,7 +55,7 @@ export default function Chat() {
     <div className="h-dvh flex flex-col justify-center w-full stretch">
       <Header />
       {messages.length === 0 ? (
-        <div className="max-w-xl mx-auto w-full">
+        <div className="max-w-3xl mx-auto w-full">
           <ProjectOverview />
         </div>
       ) : (
@@ -41,11 +63,13 @@ export default function Chat() {
       )}
       <form
         onSubmit={handleSubmit}
-        className="pb-8 bg-white dark:bg-black w-full max-w-xl mx-auto px-4 sm:px-0"
+        className="pb-8 bg-white dark:bg-black w-full max-w-3xl mx-auto px-4 sm:px-0"
       >
-        <Textarea
+        <MultiModalTextarea
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
+          activeButton={activeButton}
+          setActiveButton={setActiveButton}
           handleInputChange={handleInputChange}
           input={input}
           isLoading={isLoading}
