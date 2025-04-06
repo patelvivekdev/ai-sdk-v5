@@ -1,5 +1,6 @@
 import Chat from "@/components/chat";
 
 export default function Page() {
-  return <Chat />;
+  const chatId = crypto.randomUUID();
+  return <Chat chatId={chatId} />;
 }
