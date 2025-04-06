@@ -274,8 +274,9 @@ export const MultiModalTextarea = ({
               </Button>
             ) : (
               <Button
-                type="submit"
+                type="button"
                 size="icon"
+                onClick={submitForm}
                 disabled={isLoading || !input.trim()}
                 className="rounded-full p-2 bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:dark:bg-zinc-700 dark:disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
               >
