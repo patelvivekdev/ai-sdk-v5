@@ -46,7 +46,6 @@ export function useScrollToBottom<T extends HTMLElement>(): [
   useEffect(() => {
     const container = containerRef.current;
     const viewport = getViewport(container);
-    console.log(container, viewport, "container and viewport");
 
     if (!container || !viewport) {
       return;

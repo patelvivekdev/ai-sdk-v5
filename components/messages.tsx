@@ -17,9 +17,9 @@ export const Messages = ({
   return (
     <div
       data-radix-scroll-area-viewport
-      className="flex-1 overflow-y-scroll relative"
+      className="flex-1 overflow-y-scroll relative py-8"
     >
-      <div className="space-y-4 py-8" ref={containerRef}>
+      <div className="space-y-4 " ref={containerRef}>
         <div className="max-w-3xl mx-auto pt-8">
           {messages.map((m, i) => (
             <Message
