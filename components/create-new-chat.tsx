@@ -24,8 +24,8 @@ export function CreateNewChatButton({ className }: CreateNewChatButtonProps) {
           >
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/">
-              <PlusCircle className="h-4 w-4" />
-              <span>new chat</span>
+              <PlusCircle className="size-5" />
+              <span className="hidden md:block">new chat</span>
             </a>
           </Button>
         </TooltipTrigger>
