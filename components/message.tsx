@@ -114,7 +114,7 @@ export function ReasoningMessagePart({
         });
       }, 300); // Slightly longer than the animation duration
     },
-    [isExpanded]
+    [isExpanded],
   );
 
   const formattedTime = thinkingTime.toFixed(1);
@@ -173,7 +173,7 @@ export function ReasoningMessagePart({
                   />
                 ) : (
                   "<redacted>"
-                )
+                ),
               )}
             </motion.div>
           )}
@@ -205,7 +205,7 @@ const PurePreviewMessage = ({
         <div
           className={cn(
             "flex gap-4 w-full group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl",
-            "group-data-[role=user]/message:w-fit"
+            "group-data-[role=user]/message:w-fit",
           )}
         >
           {/* {message.role === "assistant" && (
@@ -304,7 +304,7 @@ export const ThinkingMessage = () => {
           "flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl",
           {
             "group-data-[role=user]/message:bg-muted": true,
-          }
+          },
         )}
       >
         <div className="flex flex-col gap-2 w-full">

@@ -11,7 +11,7 @@ import {
 export function useScrollToBottom<T extends HTMLElement>(): [
   RefObject<T | null>,
   boolean,
-  () => void
+  () => void,
 ] {
   const containerRef = useRef<T>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -40,7 +40,7 @@ export function useScrollToBottom<T extends HTMLElement>(): [
         setShouldAutoScroll(atBottom);
       }
     },
-    [isAtBottom]
+    [isAtBottom],
   );
 
   useEffect(() => {

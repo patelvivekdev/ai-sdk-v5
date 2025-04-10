@@ -23,7 +23,7 @@ const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
         size="icon"
         className={cn(
           "relative text-muted-foreground py-1 px-2 h-fit",
-          className
+          className,
         )}
         asChild={asChild}
         {...props}
@@ -34,19 +34,19 @@ const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
           <Check
             className={cn(
               "h-4 w-4 text-teal-600 transition-transform ease-in-out",
-              isCopied ? "scale-100" : "scale-0"
+              isCopied ? "scale-100" : "scale-0",
             )}
           />
         </div>
         <Copy
           className={cn(
             "h-4 w-4 transition-transform ease-in-out",
-            isCopied ? "scale-0" : "scale-100"
+            isCopied ? "scale-0" : "scale-100",
           )}
         />
       </Button>
     );
-  }
+  },
 );
 CopyButton.displayName = "CopyButton";
 

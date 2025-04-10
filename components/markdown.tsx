@@ -24,7 +24,7 @@ const CodeBlock = memo(
   ({ language, className, children, ...props }: CodeBlockProps) => {
     const code = String(children).replace(/\n$/, "");
     const selectedLanguage = Languages.find(
-      (langData) => langData.name === language
+      (langData) => langData.name === language,
     );
 
     return (
@@ -50,7 +50,7 @@ const CodeBlock = memo(
           PreTag="pre"
           className={cn(
             "overflow-x-scroll rounded-b-md !m-0 no-scrollbar",
-            className
+            className,
           )}
         >
           {code}
@@ -61,7 +61,7 @@ const CodeBlock = memo(
   (prevProps, nextProps) =>
     prevProps.children === nextProps.children &&
     prevProps.className === nextProps.className &&
-    prevProps.language === nextProps.language
+    prevProps.language === nextProps.language,
 );
 
 CodeBlock.displayName = "CodeBlock";
@@ -88,7 +88,7 @@ const components: Partial<Components> = {
       <code
         className={cn(
           "rounded bg-muted/30 px-[0.3rem] py-[0.2rem] font-mono text-sm",
-          className
+          className,
         )}
         {...props}
       >
@@ -248,7 +248,7 @@ const MemoizedMarkdownBlock = memo(
       return false;
     }
     return true;
-  }
+  },
 );
 
 MemoizedMarkdownBlock.displayName = "MemoizedMarkdownBlock";

@@ -5,19 +5,18 @@ import { useState, useEffect } from "react";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "@/components/messages";
 import { Header } from "@/components/header";
-import { MultiModalTextarea } from "./textarea";
+import { MultiModalTextarea } from "./chat-input";
 import { ModelOption } from "./model-picker";
 import { MODELS } from "./model-picker";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
 export default function Chat({ chatId }: { chatId: string }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
-    MODELS["gemini-2.0-flash"]
+    MODELS["gemini-2.0-flash"],
   );
   const [activeButton, setActiveButton] = useState<"none" | "search" | "think">(
-    "none"
+    "none",
   );
 
   // Update model when activeButton changes
@@ -45,8 +44,6 @@ export default function Chat({ chatId }: { chatId: string }) {
     },
   });
 
-  const isMobile = useIsMobile();
-
   const isLoading = status === "streaming" || status === "submitted";
 
   return (
@@ -61,12 +58,8 @@ export default function Chat({ chatId }: { chatId: string }) {
       )}
       <form
         className={cn(
-          "bg-secondary flex w-full max-w-3xl mx-auto px-4 sm:px-2 py-1 mt-4 shadow-md border border-gray-200 dark:border-gray-700",
-          isMobile
-            ? "fixed bottom-0 left-0 rounded-t-2xl right-0 z-50"
-            : messages.length > 0
-            ? "rounded-t-2xl"
-            : "sticky rounded-2xl bottom-0"
+          "bg-secondary flex w-11/12 max-w-3xl mx-auto px-4 sm:px-2 py-1 mt-4 shadow-md border border-gray-200 dark:border-gray-700",
+          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0",
         )}
       >
         <MultiModalTextarea

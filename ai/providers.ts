@@ -22,10 +22,10 @@ export const model = customProvider({
 
     // Gemini with reasoning capabilities
     "gemini-2.5-pro-thinking": openrouter(
-      "google/gemini-2.5-pro-exp-03-25:free"
+      "google/gemini-2.5-pro-exp-03-25:free",
     ),
     "gemini-2.0-thinking": openrouter(
-      "google/gemini-2.0-flash-thinking-exp:free"
+      "google/gemini-2.0-flash-thinking-exp:free",
     ),
   },
 });

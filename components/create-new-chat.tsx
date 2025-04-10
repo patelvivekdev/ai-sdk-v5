@@ -18,7 +18,7 @@ export function CreateNewChatButton({ className }: CreateNewChatButtonProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="outline"
+            variant="default"
             className={cn("rounded-xl", className)}
             asChild
           >

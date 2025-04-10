@@ -37,7 +37,7 @@ export function ScrollButton({
             className={cn(
               "absolute bottom-4 rounded-full shadow-lg hover:bg-muted",
               alignmentClasses[alignment],
-              className
+              className,
             )}
             onClick={onClick}
           >

@@ -80,7 +80,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   // Thinking models
   "gemini-2.0-thinking": {
     id: "gemini-2.0-thinking",
-    name: "Gemini 2.0 thinking",
+    name: "Gemini 2.0",
     description: "A model that combines advanced reasoning features",
     vision: true,
     reasoning: true,
@@ -88,7 +88,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.5-pro-thinking": {
     id: "gemini-2.5-pro-thinking",
-    name: "Gemini 2.5 pro thinking",
+    name: "Gemini 2.5 pro",
     description: "A model that combines advanced reasoning with pro features",
     vision: true,
     reasoning: true,
@@ -108,7 +108,7 @@ export const ModelPicker = ({
       return Object.values(MODELS).filter((model) => model.reasoning);
     } else {
       return Object.values(MODELS).filter(
-        (model) => !model.search && !model.reasoning
+        (model) => !model.search && !model.reasoning,
       );
     }
   };
@@ -116,37 +116,35 @@ export const ModelPicker = ({
   const availableModels = getAvailableModels();
 
   return (
-    <div className="flex flex-col gap-2 border-2 rounded-full bg-secondary">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="default" className="rounded-full ">
-            {selectedModel.name}
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel className="text-center">
-            Select a model
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup
-            value={selectedModel.id}
-            onValueChange={(value: string) =>
-              setSelectedModel(
-                Object.values(availableModels).find(
-                  (model) => model.id === value
-                ) || MODELS["gemini-2.0-flash"]
-              )
-            }
-          >
-            {availableModels.map((model) => (
-              <DropdownMenuRadioItem key={model.id} value={model.id}>
-                {model.name}
-              </DropdownMenuRadioItem>
-            ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost">
+          {selectedModel.name}
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel className="text-center">
+          Select a model
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup
+          value={selectedModel.id}
+          onValueChange={(value: string) =>
+            setSelectedModel(
+              Object.values(availableModels).find(
+                (model) => model.id === value,
+              ) || MODELS["gemini-2.0-flash"],
+            )
+          }
+        >
+          {availableModels.map((model) => (
+            <DropdownMenuRadioItem key={model.id} value={model.id}>
+              {model.name}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

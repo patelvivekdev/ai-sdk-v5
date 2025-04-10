@@ -50,7 +50,7 @@ export const MultiModalTextarea = ({
 
   const isLoading = status === "streaming" || status === "submitted";
   const [attachment, setAttachment] = useState<Attachment | undefined>(
-    undefined
+    undefined,
   );
 
   // File upload
@@ -113,13 +113,13 @@ export const MultiModalTextarea = ({
 
   // Function to handle files selected from the file dialog
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const selectedFiles = event.target.files;
     if (selectedFiles) {
       const validFiles = Array.from(selectedFiles).filter(
         (file) =>
-          file.type.startsWith("image/") || file.type === "application/pdf"
+          file.type.startsWith("image/") || file.type === "application/pdf",
       );
 
       if (validFiles.length === 0) {
@@ -191,17 +191,15 @@ export const MultiModalTextarea = ({
         {/* Control bar at the bottom with all elements */}
         <div className="flex flex-row justify-between items-center">
           {selectedModel.vision ? (
-            <div className="flex items-center gap-2">
-              <AttachmentsButton
-                fileInputRef={fileInputRef}
-                isLoading={isLoading}
-              />
-            </div>
+            <AttachmentsButton
+              fileInputRef={fileInputRef}
+              isLoading={isLoading}
+            />
           ) : (
             <div></div>
           )}
           {/* center - Model picker and utility buttons */}
-          <div className="flex items-center space-x-2 px-2">
+          <div className="flex items-center space-x-2 px-1">
             {/* Utility buttons */}
             <Button
               type="button"
@@ -209,11 +207,11 @@ export const MultiModalTextarea = ({
                 setActiveButton(activeButton === "search" ? "none" : "search");
               }}
               variant={activeButton === "search" ? "default" : "outline"}
-              className={`rounded-full p-2 transition-colors flex items-center ${
+              className={`rounded-full transition-colors flex items-center ${
                 activeButton === "search"
               } disabled:bg-zinc-300 disabled:cursor-not-allowed`}
               aria-pressed={activeButton === "search"}
-              title="Deep Search"
+              title="Search with gemini"
             >
               <Search className="size-4 " />
               <span className="ml-1.5 hidden sm:inline text-xs">Search</span>
@@ -225,7 +223,7 @@ export const MultiModalTextarea = ({
                 setActiveButton(activeButton === "think" ? "none" : "think");
               }}
               variant={activeButton === "think" ? "default" : "outline"}
-              className={`rounded-full p-2 transition-colors flex items-center ${
+              className={`rounded-full transition-colors flex items-center ${
                 activeButton === "think"
               } disabled:bg-zinc-300 disabled:cursor-not-allowed`}
               aria-pressed={activeButton === "think"}
@@ -274,11 +272,11 @@ export const MultiModalTextarea = ({
               </Button>
             ) : (
               <Button
-                type="button"
+                type="submit"
                 size="icon"
                 onClick={submitForm}
                 disabled={isLoading || !input.trim()}
-                className="rounded-full p-2 bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:dark:bg-zinc-700 dark:disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+                className="rounded-full bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:dark:bg-zinc-700 dark:disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
               >
                 <ArrowUp className="size-4 text-white" />
               </Button>
@@ -302,7 +300,8 @@ function PureAttachmentsButton({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className="rounded-full h-fit border dark:border-zinc-600"
+            size="icon"
+            className="rounded-full border dark:border-zinc-600"
             onClick={async (e) => {
               e.preventDefault();
               fileInputRef.current?.click();
