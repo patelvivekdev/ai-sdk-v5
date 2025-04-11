@@ -13,10 +13,10 @@ import { toast } from "sonner";
 
 export default function Chat({ chatId }: { chatId: string }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
-    MODELS["gemini-2.0-flash"],
+    MODELS["gemini-2.0-flash"]
   );
   const [activeButton, setActiveButton] = useState<"none" | "search" | "think">(
-    "none",
+    "none"
   );
 
   // Update model when activeButton changes
@@ -31,7 +31,7 @@ export default function Chat({ chatId }: { chatId: string }) {
     }
   }, [activeButton]);
 
-  const { messages, status } = useChat({
+  const { messages, status, reload } = useChat({
     id: chatId,
     body: {
       selectedModel: selectedModel.id,
@@ -44,8 +44,6 @@ export default function Chat({ chatId }: { chatId: string }) {
     },
   });
 
-  const isLoading = status === "streaming" || status === "submitted";
-
   return (
     <div className="h-dvh flex flex-col justify-center w-full stretch">
       <Header />
@@ -54,12 +52,17 @@ export default function Chat({ chatId }: { chatId: string }) {
           <ProjectOverview />
         </div>
       ) : (
-        <Messages messages={messages} isLoading={isLoading} status={status} />
+        <Messages
+          selectedModel={selectedModel.id}
+          reload={reload}
+          messages={messages}
+          status={status}
+        />
       )}
       <form
         className={cn(
           "bg-secondary flex w-11/12 max-w-3xl mx-auto px-4 sm:px-2 py-1 mt-4 shadow-md border border-gray-200 dark:border-gray-700",
-          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0",
+          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0"
         )}
       >
         <MultiModalTextarea
