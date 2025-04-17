@@ -18,7 +18,7 @@ function PureTimeStamp({
       className={cn(
         "block px-1 text-xs opacity-50",
         "duration-500 animate-in fade-in-0",
-        isUser && "text-right"
+        isUser && "text-right",
       )}
     >
       {formattedTime}

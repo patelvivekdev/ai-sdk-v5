@@ -13,10 +13,10 @@ import { toast } from "sonner";
 
 export default function Chat({ chatId }: { chatId: string }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
-    MODELS["gemini-2.0-flash"]
+    MODELS["gemini-2.0-flash"],
   );
   const [activeButton, setActiveButton] = useState<"none" | "search" | "think">(
-    "none"
+    "none",
   );
 
   // Update model when activeButton changes
@@ -62,7 +62,7 @@ export default function Chat({ chatId }: { chatId: string }) {
       <form
         className={cn(
           "bg-secondary flex w-11/12 max-w-3xl mx-auto px-4 sm:px-2 py-1 mt-4 shadow-md border border-gray-200 dark:border-gray-700",
-          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0"
+          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0",
         )}
       >
         <MultiModalTextarea

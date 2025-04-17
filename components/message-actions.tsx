@@ -65,5 +65,5 @@ export const MessageActions = memo(
     if (prevProps.message.content !== nextProps.message.content) return false;
 
     return true;
-  }
+  },
 );

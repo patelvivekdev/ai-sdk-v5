@@ -29,6 +29,15 @@ export interface ModelOption {
 
 export const MODELS: Record<modelID, ModelOption> = {
   // Vision models
+  "gemini-2.0-flash-lite": {
+    id: "gemini-2.0-flash-lite",
+    name: "Gemini 2.0 flash lite",
+    description:
+      "A lightweight version of Gemini 2.0 flash, optimized for speed and efficiency",
+    vision: true,
+    reasoning: false,
+    search: false,
+  },
   "gemini-2.0-flash": {
     id: "gemini-2.0-flash",
     name: "Gemini 2.0 flash",
@@ -38,11 +47,11 @@ export const MODELS: Record<modelID, ModelOption> = {
     reasoning: false,
     search: false,
   },
-  "gemini-2.0-flash-lite": {
-    id: "gemini-2.0-flash-lite",
-    name: "Gemini 2.0 flash lite",
+  "gemini-2.5-flash": {
+    id: "gemini-2.5-flash",
+    name: "Gemini 2.5 flash",
     description:
-      "A lightweight version of Gemini 2.0 flash, optimized for speed and efficiency",
+      "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
     reasoning: false,
     search: false,
@@ -67,6 +76,15 @@ export const MODELS: Record<modelID, ModelOption> = {
     reasoning: false,
     search: true,
   },
+  "gemini-2.5-search": {
+    id: "gemini-2.5-search",
+    name: "Gemini 2.5 search",
+    description:
+      "Our flagship LLM that delivers unfiltered insights and raw intelligence",
+    vision: true,
+    reasoning: false,
+    search: true,
+  },
   "gemini-2.5-pro-search": {
     id: "gemini-2.5-pro-search",
     name: "Gemini 2.5 pro search",
@@ -80,7 +98,15 @@ export const MODELS: Record<modelID, ModelOption> = {
   // Thinking models
   "gemini-2.0-thinking": {
     id: "gemini-2.0-thinking",
-    name: "Gemini 2.0",
+    name: "Gemini 2.0 Flash",
+    description: "A model that combines advanced reasoning features",
+    vision: true,
+    reasoning: true,
+    search: false,
+  },
+  "gemini-2.5-thinking": {
+    id: "gemini-2.5-thinking",
+    name: "Gemini 2.5 Flash",
     description: "A model that combines advanced reasoning features",
     vision: true,
     reasoning: true,

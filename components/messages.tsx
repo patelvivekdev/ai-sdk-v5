@@ -21,7 +21,7 @@ export const Messages = ({
   messages: TMessage[];
   status: "error" | "submitted" | "streaming" | "ready";
   reload: (
-    chatRequestOptions?: ChatRequestOptions
+    chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
 }) => {
   const [containerRef, showScrollButton, scrollToBottom] =

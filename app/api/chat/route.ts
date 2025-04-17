@@ -14,6 +14,11 @@ export async function POST(req: Request) {
       model: model.languageModel(selectedModel),
       system: "You are a helpful assistant.",
       messages,
+      providerOptions: {
+        google: {
+          thinking: { type: "enabled" },
+        },
+      },
     });
 
     return result.toDataStreamResponse({
