@@ -34,7 +34,6 @@ const CodeBlock = memo(
             {selectedLanguage?.icon ? (
               <selectedLanguage.icon className="size-5" />
             ) : (
-              // <FileIcon size={14} />
               <CodeGray className="size-5" />
             )}
             <span className="font-mono text-sm tracking-tight">

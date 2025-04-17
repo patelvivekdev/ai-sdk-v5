@@ -16,12 +16,24 @@ export const model = customProvider({
     // Gemini with search grounding
     "gemini-2.0-search": google("gemini-2.0-flash-001", {
       useSearchGrounding: true,
+      dynamicRetrievalConfig: {
+        mode: "MODE_DYNAMIC",
+        dynamicThreshold: 0,
+      },
     }),
     "gemini-2.5-search": google("gemini-2.5-flash-preview-04-17", {
       useSearchGrounding: true,
+      dynamicRetrievalConfig: {
+        mode: "MODE_DYNAMIC",
+        dynamicThreshold: 0,
+      },
     }),
     "gemini-2.5-pro-search": google("gemini-2.5-pro-exp-03-25", {
       useSearchGrounding: true,
+      dynamicRetrievalConfig: {
+        mode: "MODE_DYNAMIC",
+        dynamicThreshold: 0,
+      },
     }),
 
     // Gemini with reasoning capabilities

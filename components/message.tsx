@@ -208,14 +208,6 @@ const PurePreviewMessage = ({
             "group-data-[role=user]/message:w-fit",
           )}
         >
-          {/* {message.role === "assistant" && (
-            <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border bg-background">
-              <div className="">
-                <SparklesIcon size={14} />
-              </div>
-            </div>
-          )} */}
-
           <div className="flex flex-col w-full space-y-1">
             {attachments && attachments?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
@@ -310,7 +302,12 @@ export const ThinkingMessage = () => {
       >
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-col gap-4 text-muted-foreground">
-            Thinking...
+            <div className="flex items-center gap-2">
+              <div className="animate-spin">
+                <SpinnerIcon />
+              </div>
+              <span className="text-sm"> Thinking...</span>
+            </div>
           </div>
         </div>
       </div>
