@@ -28,7 +28,19 @@ export const model = customProvider({
         dynamicThreshold: 0,
       },
     }),
-    "gemini-2.5-pro-search": google("gemini-2.5-pro-exp-03-25", {
+
+    // Gemini with search and reasoning capabilities
+    "gemini-2.5-flash-search-thinking": google(
+      "gemini-2.5-flash-preview-04-17",
+      {
+        useSearchGrounding: true,
+        dynamicRetrievalConfig: {
+          mode: "MODE_DYNAMIC",
+          dynamicThreshold: 0,
+        },
+      },
+    ),
+    "gemini-2.5-pro-search-thinking": google("gemini-2.5-pro-exp-03-25", {
       useSearchGrounding: true,
       dynamicRetrievalConfig: {
         mode: "MODE_DYNAMIC",

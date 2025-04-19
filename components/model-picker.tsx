@@ -4,19 +4,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
-
-interface ModelPickerProps {
-  selectedModel: ModelOption;
-  setSelectedModel: (model: ModelOption) => void;
-  activeButton: "none" | "search" | "think";
-}
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { TextMorph } from "@/components/ui/text-morph";
 
 export interface ModelOption {
   id: modelID;
@@ -31,7 +27,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   // Vision models
   "gemini-2.0-flash-lite": {
     id: "gemini-2.0-flash-lite",
-    name: "Gemini 2.0 flash lite",
+    name: "Gemini 2.0 Flash Lite",
     description:
       "A lightweight version of Gemini 2.0 flash, optimized for speed and efficiency",
     vision: true,
@@ -40,7 +36,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.0-flash": {
     id: "gemini-2.0-flash",
-    name: "Gemini 2.0 flash",
+    name: "Gemini 2.0 Flash",
     description:
       "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
@@ -49,7 +45,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.5-flash": {
     id: "gemini-2.5-flash",
-    name: "Gemini 2.5 flash",
+    name: "Gemini 2.5 Flash",
     description:
       "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
@@ -58,7 +54,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.0-pro": {
     id: "gemini-2.0-pro",
-    name: "Gemini 2.0 pro",
+    name: "Gemini 2.0 Pro",
     description:
       "A professional-grade model that combines advanced reasoning with pro features",
     vision: true,
@@ -69,7 +65,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   // Search models
   "gemini-2.0-search": {
     id: "gemini-2.0-search",
-    name: "Gemini 2.0 search",
+    name: "Gemini 2.0 Flash",
     description:
       "A powerful search model that provides accurate and relevant search results",
     vision: true,
@@ -78,20 +74,29 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.5-search": {
     id: "gemini-2.5-search",
-    name: "Gemini 2.5 search",
+    name: "Gemini 2.5 Flash",
     description:
       "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
     reasoning: false,
     search: true,
   },
-  "gemini-2.5-pro-search": {
-    id: "gemini-2.5-pro-search",
-    name: "Gemini 2.5 pro search",
-    description:
-      "An advanced search model that enhances search capabilities with pro features",
+
+  // Search and thinking models
+  "gemini-2.5-flash-search-thinking": {
+    id: "gemini-2.5-flash-search-thinking",
+    name: "Gemini 2.5 Flash",
+    description: "A model that combines advanced search and thinking features",
     vision: true,
-    reasoning: false,
+    reasoning: true,
+    search: true,
+  },
+  "gemini-2.5-pro-search-thinking": {
+    id: "gemini-2.5-pro-search-thinking",
+    name: "Gemini 2.5 Pro",
+    description: "A model that combines advanced search and thinking features",
+    vision: true,
+    reasoning: true,
     search: true,
   },
 
@@ -114,7 +119,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.5-pro-thinking": {
     id: "gemini-2.5-pro-thinking",
-    name: "Gemini 2.5 pro",
+    name: "Gemini 2.5 Pro",
     description: "A model that combines advanced reasoning with pro features",
     vision: true,
     reasoning: true,
@@ -122,16 +127,31 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
 };
 
+interface ModelPickerProps {
+  selectedModel: ModelOption;
+  setSelectedModel: (model: ModelOption) => void;
+  activeSearchButton: "none" | "search";
+  activeThinkButton: "none" | "think";
+}
 export const ModelPicker = ({
   selectedModel,
   setSelectedModel,
-  activeButton,
+  activeSearchButton,
+  activeThinkButton,
 }: ModelPickerProps) => {
   const getAvailableModels = () => {
-    if (activeButton === "search") {
-      return Object.values(MODELS).filter((model) => model.search);
-    } else if (activeButton === "think") {
-      return Object.values(MODELS).filter((model) => model.reasoning);
+    if (activeSearchButton === "search" && activeThinkButton === "think") {
+      return Object.values(MODELS).filter(
+        (model) => model.search && model.reasoning,
+      );
+    } else if (activeSearchButton === "search") {
+      return Object.values(MODELS).filter(
+        (model) => model.search && !model.reasoning,
+      );
+    } else if (activeThinkButton === "think") {
+      return Object.values(MODELS).filter(
+        (model) => model.reasoning && !model.search,
+      );
     } else {
       return Object.values(MODELS).filter(
         (model) => !model.search && !model.reasoning,
@@ -145,31 +165,45 @@ export const ModelPicker = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
-          {selectedModel.name}
+          <Image src="/gemini.png" alt="Gemini" width={16} height={16} />
+          <TextMorph
+            variants={{
+              initial: { opacity: 0, y: 10 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, y: -10 },
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 30,
+              mass: 0.5,
+            }}
+          >
+            {selectedModel.name}
+          </TextMorph>
           <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="">
         <DropdownMenuLabel className="text-center">
-          Select a model
+          Choose a model
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={selectedModel.id}
-          onValueChange={(value: string) =>
-            setSelectedModel(
-              Object.values(availableModels).find(
-                (model) => model.id === value,
-              ) || MODELS["gemini-2.0-flash"],
-            )
-          }
-        >
+        <div className="flex flex-col gap-1">
           {availableModels.map((model) => (
-            <DropdownMenuRadioItem key={model.id} value={model.id}>
-              {model.name}
-            </DropdownMenuRadioItem>
+            <DropdownMenuItem
+              key={model.id}
+              onClick={() => setSelectedModel(model)}
+              className={cn(
+                "flex flex-row justify-start items-center",
+                selectedModel.id === model.id &&
+                  "bg-primary text-primary-foreground hover:bg-primary! hover:text-primary-foreground!",
+              )}
+            >
+              <span className="text-sm">{model.name}</span>
+            </DropdownMenuItem>
           ))}
-        </DropdownMenuRadioGroup>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

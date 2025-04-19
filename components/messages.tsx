@@ -13,11 +13,13 @@ import { RefreshCcw } from "lucide-react";
 
 export const Messages = ({
   selectedModel,
+  reasoningLevel,
   messages,
   status,
   reload,
 }: {
   selectedModel: string;
+  reasoningLevel: "low" | "medium" | "high";
   messages: TMessage[];
   status: "error" | "submitted" | "streaming" | "ready";
   reload: (
@@ -54,6 +56,7 @@ export const Messages = ({
                     reload({
                       body: {
                         selectedModel,
+                        reasoningLevel,
                       },
                     })
                   }

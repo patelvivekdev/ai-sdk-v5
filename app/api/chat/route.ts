@@ -4,19 +4,37 @@ import { streamText, type UIMessage } from "ai";
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
+const REASONING_LEVEL_MAP = {
+  low: 7000,
+  medium: 15000,
+  high: 24576,
+};
+
 export async function POST(req: Request) {
   const {
     messages,
     selectedModel,
-  }: { messages: UIMessage[]; selectedModel: modelID } = await req.json();
+    reasoningLevel,
+  }: {
+    messages: UIMessage[];
+    selectedModel: modelID;
+    reasoningLevel: "low" | "medium" | "high";
+  } = await req.json();
   try {
     const result = streamText({
       model: model.languageModel(selectedModel),
-      system: "You are a helpful assistant.",
       messages,
       providerOptions: {
         google: {
-          thinking: { type: "enabled" },
+          thinkingConfig:
+            selectedModel === "gemini-2.5-thinking" ||
+            selectedModel === "gemini-2.5-flash-search-thinking"
+              ? {
+                  thinkingBudget: REASONING_LEVEL_MAP[reasoningLevel],
+                }
+              : {
+                  thinkingBudget: 0,
+                },
         },
       },
     });
@@ -24,6 +42,7 @@ export async function POST(req: Request) {
     return result.toDataStreamResponse({
       sendReasoning: true,
       sendSources: true,
+      sendUsage: true,
     });
   } catch (error) {
     console.error("Error in POST request:", error);

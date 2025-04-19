@@ -22,21 +22,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import { ReasoningSelector } from "./reasoning-selector";
+import { cn } from "@/lib/utils";
 
 interface InputProps {
   chatId: string;
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
-  activeButton: "none" | "search" | "think";
-  setActiveButton: Dispatch<SetStateAction<"none" | "search" | "think">>;
+  activeSearchButton: "none" | "search";
+  setActiveSearchButton: Dispatch<SetStateAction<"none" | "search">>;
+  activeThinkButton: "none" | "think";
+  setActiveThinkButton: Dispatch<SetStateAction<"none" | "think">>;
+  reasoningLevel: "low" | "medium" | "high";
+  setReasoningLevel: Dispatch<SetStateAction<"low" | "medium" | "high">>;
 }
 
-export const MultiModalTextarea = ({
+export const ChatInput = ({
   chatId,
   selectedModel,
   setSelectedModel,
-  activeButton,
-  setActiveButton,
+  activeSearchButton,
+  setActiveSearchButton,
+  activeThinkButton,
+  setActiveThinkButton,
+  reasoningLevel,
+  setReasoningLevel,
 }: InputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null!);
@@ -45,6 +55,7 @@ export const MultiModalTextarea = ({
     id: chatId,
     body: {
       selectedModel: selectedModel.id,
+      reasoningLevel: reasoningLevel,
     },
   });
 
@@ -162,14 +173,24 @@ export const MultiModalTextarea = ({
         onChange={handleFileChange}
         tabIndex={-1}
       />
-      {attachment && (
-        <div className="overflow-hidden">
-          <AttachmentPreview
-            attachment={attachment}
-            onRemove={() => setAttachment(undefined)}
+      <div className="flex flex-row justify-between items-center">
+        {attachment && (
+          <div className="overflow-hidden">
+            <AttachmentPreview
+              attachment={attachment}
+              onRemove={() => setAttachment(undefined)}
+            />
+          </div>
+        )}
+        <div className="ml-auto">
+          <ModelPicker
+            setSelectedModel={setSelectedModel}
+            selectedModel={selectedModel}
+            activeSearchButton={activeSearchButton}
+            activeThinkButton={activeThinkButton}
           />
         </div>
-      )}
+      </div>
       <div className="flex flex-col gap-2">
         <ShadcnTextarea
           className="resize-none w-full p-2 border-0 shadow-none border-none focus-visible:ring-0 focus-visible:outline-none"
@@ -190,98 +211,124 @@ export const MultiModalTextarea = ({
 
         {/* Control bar at the bottom with all elements */}
         <div className="flex flex-row justify-between items-center">
-          {selectedModel.vision ? (
-            <AttachmentsButton
-              fileInputRef={fileInputRef}
-              isLoading={isLoading}
-            />
-          ) : (
-            <div></div>
-          )}
           {/* center - Model picker and utility buttons */}
           <div className="flex items-center space-x-2 px-1">
+            {selectedModel.vision ? (
+              <AttachmentsButton
+                fileInputRef={fileInputRef}
+                isLoading={isLoading}
+              />
+            ) : (
+              <div></div>
+            )}
             {/* Utility buttons */}
             <Button
               type="button"
               onClick={() => {
-                setActiveButton(activeButton === "search" ? "none" : "search");
+                setActiveSearchButton(
+                  activeSearchButton === "search" ? "none" : "search",
+                );
               }}
-              variant={activeButton === "search" ? "default" : "outline"}
-              className={`rounded-full transition-colors flex items-center ${
-                activeButton === "search"
-              } disabled:bg-zinc-300 disabled:cursor-not-allowed`}
-              aria-pressed={activeButton === "search"}
-              title="Search with gemini"
+              variant="outline"
+              className={cn(
+                "rounded-full transition-colors flex items-center dark:border-white",
+                activeSearchButton === "search" &&
+                  "bg-accent-foreground text-accent hover:bg-accent-foreground/90 dark:bg-primary dark:text-accent-foreground dark:hover:bg-primary/60",
+              )}
             >
-              <Search className="size-4 " />
-              <span className="ml-1.5 hidden sm:inline text-xs">Search</span>
+              <Search
+                className={cn(
+                  "size-4",
+                  activeSearchButton === "search" &&
+                    "text-accent dark:text-accent",
+                )}
+              />
+              <span
+                className={cn(
+                  "text-xs",
+                  activeSearchButton === "search" &&
+                    "text-accent dark:text-accent",
+                )}
+              >
+                Search
+              </span>
             </Button>
-
             <Button
               type="button"
               onClick={() => {
-                setActiveButton(activeButton === "think" ? "none" : "think");
+                setActiveThinkButton(
+                  activeThinkButton === "think" ? "none" : "think",
+                );
               }}
-              variant={activeButton === "think" ? "default" : "outline"}
-              className={`rounded-full transition-colors flex items-center ${
-                activeButton === "think"
-              } disabled:bg-zinc-300 disabled:cursor-not-allowed`}
-              aria-pressed={activeButton === "think"}
-              title="Think"
+              variant="outline"
+              className={cn(
+                "rounded-full transition-colors flex items-center dark:border-white",
+                activeThinkButton === "think" &&
+                  "bg-accent-foreground text-accent hover:bg-accent-foreground/90 dark:bg-primary dark:text-accent-foreground dark:hover:bg-primary/60",
+              )}
             >
-              <Brain className="size-4 " />
-              <span className="ml-1.5 hidden sm:inline text-xs">Think</span>
-            </Button>
-          </div>
-          <div className="flex items-center space-x-2">
-            {/* Model Picker */}
-            <div className="w-40 sm:w-56">
-              <ModelPicker
-                setSelectedModel={setSelectedModel}
-                selectedModel={selectedModel}
-                activeButton={activeButton}
+              <Brain
+                className={cn(
+                  "size-4",
+                  activeThinkButton === "think" && "text-accent",
+                )}
               />
-            </div>
-
-            {/* Right side - Submit/Stop button */}
-            {status === "streaming" || status === "submitted" ? (
-              <Button
-                type="button"
-                onClick={stop}
-                size="icon"
-                className="cursor-pointer rounded-full bg-zinc-800 hover:bg-black disabled:bg-zinc-300 disabled:cursor-not-allowed transition-colors"
+              <span
+                className={cn(
+                  "text-xs",
+                  activeThinkButton === "think" && "text-accent",
+                )}
               >
-                <div className="animate-spin h-4 w-4">
-                  <svg className="h-4 w-4 text-white" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                </div>
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                size="icon"
-                onClick={submitForm}
-                disabled={isLoading || !input.trim()}
-                className="rounded-full bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:dark:bg-zinc-700 dark:disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
-              >
-                <ArrowUp className="size-4 text-white" />
-              </Button>
+                Think
+              </span>
+            </Button>
+            {/* Only show reasoning selector when gemini-2.5-thinking is selected */}
+            {(selectedModel.id === "gemini-2.5-thinking" ||
+              selectedModel.id === "gemini-2.5-flash-search-thinking") && (
+              <ReasoningSelector
+                reasoningLevel={reasoningLevel}
+                setReasoningLevel={setReasoningLevel}
+              />
             )}
           </div>
+          {/* Right side - Submit/Stop button */}
+          {status === "streaming" || status === "submitted" ? (
+            <Button
+              type="button"
+              onClick={stop}
+              size="icon"
+              className="cursor-pointer rounded-full"
+            >
+              <div className="animate-spin h-4 w-4">
+                <svg className="h-4 w-4" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              </div>
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              size="icon"
+              onClick={submitForm}
+              disabled={isLoading || !input.trim()}
+              className="rounded-full"
+            >
+              <ArrowUp />
+            </Button>
+          )}
         </div>
       </div>
     </div>
