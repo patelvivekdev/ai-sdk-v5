@@ -1,4 +1,4 @@
-import type { ChatRequestOptions, Message as TMessage } from "ai";
+import type { Message as TMessage } from "ai";
 import { Message, ThinkingMessage } from "./message";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { ScrollButton } from "./scroll-button";
@@ -10,21 +10,15 @@ import {
 } from "./ui/tooltip";
 import { Button } from "./ui/button";
 import { RefreshCcw } from "lucide-react";
-import { ReasoningLevel } from "./reasoning-selector";
+
 export const Messages = ({
-  selectedModel,
-  reasoningLevel,
   messages,
   status,
-  reload,
+  handleReloadChat,
 }: {
-  selectedModel: string;
-  reasoningLevel: ReasoningLevel;
   messages: TMessage[];
   status: "error" | "submitted" | "streaming" | "ready";
-  reload: (
-    chatRequestOptions?: ChatRequestOptions,
-  ) => Promise<string | null | undefined>;
+  handleReloadChat: () => void;
 }) => {
   const [containerRef, showScrollButton, scrollToBottom] =
     useScrollToBottom<HTMLDivElement>();
@@ -52,14 +46,7 @@ export const Messages = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() =>
-                    reload({
-                      body: {
-                        selectedModel,
-                        reasoningLevel,
-                      },
-                    })
-                  }
+                  onClick={handleReloadChat}
                   className="gap-2"
                 >
                   <RefreshCcw className="h-4 w-4" />

@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Attachment } from "ai";
+import { Attachment, generateId, Message } from "ai";
 import { useAutosizeTextArea } from "@/hooks/use-autosize-textarea";
 import { toast } from "sonner";
 import { useChat } from "@ai-sdk/react";
@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
+import useChatStore from "@/hooks/useChatStore";
 
 interface InputProps {
   chatId: string;
@@ -49,12 +50,25 @@ export const ChatInput = ({
 }: InputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null!);
+  const saveMessages = useChatStore((state) => state.saveMessages);
+  const getMessagesById = useChatStore((state) => state.getMessagesById);
 
   const { input, handleInputChange, handleSubmit, status, stop } = useChat({
     id: chatId,
     body: {
       selectedModel: selectedModel.id,
       reasoningLevel: reasoningLevel,
+    },
+    onFinish(message) {
+      console.log("message", message);
+      const savedMessages = getMessagesById(chatId);
+      saveMessages(chatId, [...savedMessages, message]);
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        description:
+          "Please try again or contact support if the issue persists.",
+      });
     },
   });
 
@@ -154,14 +168,39 @@ export const ChatInput = ({
   };
 
   const submitForm = useCallback(() => {
+    window.history.replaceState({}, "", `/c/${chatId}`);
+    const userMessage: Message = {
+      id: generateId(),
+      role: "user",
+      content: input,
+      createdAt: new Date(),
+      parts: [
+        {
+          type: "text",
+          text: input,
+        },
+      ],
+    };
     handleSubmit(undefined, {
       experimental_attachments: attachment ? [attachment] : [],
     });
+    saveMessages(chatId, [...getMessagesById(chatId), userMessage]);
     setAttachment(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, [attachment, handleSubmit]);
+  }, [attachment, handleSubmit, chatId, getMessagesById, saveMessages, input]);
+
+  const removeLatestMessage = () => {
+    const updatedMessages = getMessagesById(chatId).slice(0, -1);
+    saveMessages(chatId, updatedMessages);
+    return updatedMessages;
+  };
+
+  const handleStop = () => {
+    stop();
+    removeLatestMessage();
+  };
 
   return (
     <div className="relative w-full">
@@ -260,7 +299,7 @@ export const ChatInput = ({
           {status === "streaming" || status === "submitted" ? (
             <Button
               type="button"
-              onClick={stop}
+              onClick={handleStop}
               size="icon"
               className="cursor-pointer rounded-2xl"
             >

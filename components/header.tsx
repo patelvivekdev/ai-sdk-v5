@@ -1,12 +1,10 @@
-import Link from "next/link";
 import { CreateNewChatButton } from "./create-new-chat";
 import { ThemeToggle } from "./theme-toggle";
+import { SidebarTrigger } from "./ui/sidebar";
 export const Header = () => {
   return (
-    <div className="fixed right-0 z-50 left-0 w-full top-0 bg-secondary py-2 px-3 border-b flex items-center justify-between">
-      <Link href="/" className="text font-bold">
-        AI SDK + Gemini{" "}
-      </Link>
+    <div className="w-full z-50 fixed top-0 left-0 flex py-2 px-3 items-center justify-between">
+      <SidebarTrigger />
       <div className="flex items-center space-x-2">
         <CreateNewChatButton />
         <ThemeToggle />

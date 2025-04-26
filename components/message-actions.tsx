@@ -11,10 +11,19 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { TimeStamp } from "./message-timestamp";
 
 function PureMessageActions({ message }: { message: Message }) {
-  const formattedTime = message.createdAt?.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  let formattedTime = "";
+  if (message.createdAt) {
+    // Convert string timestamp to Date object if it's a string
+    const timestamp =
+      typeof message.createdAt === "string"
+        ? new Date(message.createdAt)
+        : message.createdAt;
+
+    formattedTime = timestamp.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 
   if (message.role === "user") {
     return (
@@ -28,7 +37,7 @@ function PureMessageActions({ message }: { message: Message }) {
           </Tooltip>
           <TimeStamp
             message={message}
-            formattedTime={formattedTime || ""}
+            formattedTime={formattedTime}
             isUser={true}
           />
         </div>
@@ -41,7 +50,7 @@ function PureMessageActions({ message }: { message: Message }) {
       <div className="flex flex-row items-center gap-2">
         <TimeStamp
           message={message}
-          formattedTime={formattedTime || ""}
+          formattedTime={formattedTime}
           isUser={false}
         />
         <Tooltip>

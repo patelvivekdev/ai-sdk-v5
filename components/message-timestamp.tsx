@@ -11,10 +11,17 @@ function PureTimeStamp({
   formattedTime: string;
   isUser: boolean;
 }) {
+  // Convert string timestamp to Date object for ISO string if needed
+  const dateTime = message.createdAt
+    ? typeof message.createdAt === "string"
+      ? message.createdAt
+      : message.createdAt.toISOString()
+    : undefined;
+
   return (
     <time
       key={message.id}
-      dateTime={message.createdAt?.toISOString()}
+      dateTime={dateTime}
       className={cn(
         "block px-1 text-xs opacity-50",
         "duration-500 animate-in fade-in-0",

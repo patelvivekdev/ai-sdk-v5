@@ -1,18 +1,26 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
+import { Message, useChat } from "@ai-sdk/react";
 import { useState, useEffect } from "react";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "@/components/messages";
-import { Header } from "@/components/header";
 import { ChatInput } from "./chat-input";
 import { ModelOption } from "./model-picker";
 import { MODELS } from "./model-picker";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ReasoningLevel } from "./reasoning-selector";
+import useChatStore from "@/hooks/useChatStore";
+import { Header } from "./header";
+import { ChatRequestOptions } from "ai";
 
-export default function Chat({ chatId }: { chatId: string }) {
+export default function Chat({
+  chatId,
+  initialMessages,
+}: {
+  chatId: string;
+  initialMessages: Message[];
+}) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
     MODELS["gemini-2.5-flash"],
   );
@@ -23,6 +31,8 @@ export default function Chat({ chatId }: { chatId: string }) {
     "none",
   );
   const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>("high");
+  const saveMessages = useChatStore((state) => state.saveMessages);
+  const getMessagesById = useChatStore((state) => state.getMessagesById);
 
   // Update model when activeButton changes
   useEffect(() => {
@@ -42,9 +52,15 @@ export default function Chat({ chatId }: { chatId: string }) {
 
   const { messages, status, reload } = useChat({
     id: chatId,
+    initialMessages: initialMessages,
     body: {
       selectedModel: selectedModel.id,
       reasoningLevel: reasoningLevel,
+    },
+    onFinish(message) {
+      console.log("message", message);
+      const savedMessages = getMessagesById(chatId);
+      saveMessages(chatId, [...savedMessages, message]);
     },
     onError: (error) => {
       toast.error(error.message, {
@@ -53,6 +69,25 @@ export default function Chat({ chatId }: { chatId: string }) {
       });
     },
   });
+
+  const removeLatestAssistantMessage = () => {
+    const updatedMessages = messages.filter(
+      (message) => message.role !== "assistant",
+    );
+    saveMessages(chatId, updatedMessages);
+    return updatedMessages;
+  };
+
+  const handleReloadChat = () => {
+    removeLatestAssistantMessage();
+    const requestOptions: ChatRequestOptions = {
+      body: {
+        selectedModel: selectedModel.id,
+        reasoningLevel: reasoningLevel,
+      },
+    };
+    reload(requestOptions);
+  };
 
   return (
     <div className="h-dvh flex flex-col justify-center w-full stretch">
@@ -63,9 +98,7 @@ export default function Chat({ chatId }: { chatId: string }) {
         </div>
       ) : (
         <Messages
-          selectedModel={selectedModel.id}
-          reasoningLevel={reasoningLevel}
-          reload={reload}
+          handleReloadChat={handleReloadChat}
           messages={messages}
           status={status}
         />
@@ -73,7 +106,7 @@ export default function Chat({ chatId }: { chatId: string }) {
       <form
         className={cn(
           "bg-secondary/90 flex w-11/12 max-w-3xl mx-auto sm:px-2 p-2 mt-4 shadow-md border-2 border-secondary-foreground/20",
-          messages.length > 0 ? "rounded-t-2xl" : "sticky rounded-2xl bottom-0",
+          messages.length > 0 ? "rounded-t-2xl border-b-0" : "rounded-2xl",
         )}
       >
         <ChatInput
