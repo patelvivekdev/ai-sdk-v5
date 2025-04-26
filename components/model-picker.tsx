@@ -12,7 +12,6 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { TextMorph } from "@/components/ui/text-morph";
 
 export interface ModelOption {
   id: modelID;
@@ -25,15 +24,7 @@ export interface ModelOption {
 
 export const MODELS: Record<modelID, ModelOption> = {
   // Vision models
-  "gemini-2.0-flash-lite": {
-    id: "gemini-2.0-flash-lite",
-    name: "Gemini 2.0 Flash Lite",
-    description:
-      "A lightweight version of Gemini 2.0 flash, optimized for speed and efficiency",
-    vision: true,
-    reasoning: false,
-    search: false,
-  },
+
   "gemini-2.0-flash": {
     id: "gemini-2.0-flash",
     name: "Gemini 2.0 Flash",
@@ -48,15 +39,6 @@ export const MODELS: Record<modelID, ModelOption> = {
     name: "Gemini 2.5 Flash",
     description:
       "Our flagship LLM that delivers unfiltered insights and raw intelligence",
-    vision: true,
-    reasoning: false,
-    search: false,
-  },
-  "gemini-2.0-pro": {
-    id: "gemini-2.0-pro",
-    name: "Gemini 2.0 Pro",
-    description:
-      "A professional-grade model that combines advanced reasoning with pro features",
     vision: true,
     reasoning: false,
     search: false,
@@ -164,23 +146,9 @@ export const ModelPicker = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="outline" className="rounded-2xl">
           <Image src="/gemini.png" alt="Gemini" width={16} height={16} />
-          <TextMorph
-            variants={{
-              initial: { opacity: 0, y: 10 },
-              animate: { opacity: 1, y: 0 },
-              exit: { opacity: 0, y: -10 },
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 500,
-              damping: 30,
-              mass: 0.5,
-            }}
-          >
-            {selectedModel.name}
-          </TextMorph>
+          {selectedModel.name}
           <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

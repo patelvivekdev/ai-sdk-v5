@@ -19,7 +19,7 @@ export function CreateNewChatButton({ className }: CreateNewChatButtonProps) {
         <TooltipTrigger asChild>
           <Button
             variant="default"
-            className={cn("rounded-xl", className)}
+            className={cn("rounded-2xl", className)}
             asChild
           >
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

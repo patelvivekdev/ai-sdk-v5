@@ -22,8 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { ReasoningSelector } from "./reasoning-selector";
-import { cn } from "@/lib/utils";
+import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
 
 interface InputProps {
   chatId: string;
@@ -33,8 +32,8 @@ interface InputProps {
   setActiveSearchButton: Dispatch<SetStateAction<"none" | "search">>;
   activeThinkButton: "none" | "think";
   setActiveThinkButton: Dispatch<SetStateAction<"none" | "think">>;
-  reasoningLevel: "low" | "medium" | "high";
-  setReasoningLevel: Dispatch<SetStateAction<"low" | "medium" | "high">>;
+  reasoningLevel: ReasoningLevel;
+  setReasoningLevel: (level: ReasoningLevel) => void;
 }
 
 export const ChatInput = ({
@@ -229,29 +228,11 @@ export const ChatInput = ({
                   activeSearchButton === "search" ? "none" : "search",
                 );
               }}
-              variant="outline"
-              className={cn(
-                "rounded-full transition-colors flex items-center dark:border-white",
-                activeSearchButton === "search" &&
-                  "bg-accent-foreground text-accent hover:bg-accent-foreground/90 dark:bg-primary dark:text-accent-foreground dark:hover:bg-primary/60",
-              )}
+              variant={activeSearchButton === "search" ? "default" : "outline"}
+              className="rounded-2xl"
             >
-              <Search
-                className={cn(
-                  "size-4",
-                  activeSearchButton === "search" &&
-                    "text-accent dark:text-accent",
-                )}
-              />
-              <span
-                className={cn(
-                  "text-xs",
-                  activeSearchButton === "search" &&
-                    "text-accent dark:text-accent",
-                )}
-              >
-                Search
-              </span>
+              <Search className="size-4" />
+              <span className="text-xs">Search</span>
             </Button>
             <Button
               type="button"
@@ -260,27 +241,11 @@ export const ChatInput = ({
                   activeThinkButton === "think" ? "none" : "think",
                 );
               }}
-              variant="outline"
-              className={cn(
-                "rounded-full transition-colors flex items-center dark:border-white",
-                activeThinkButton === "think" &&
-                  "bg-accent-foreground text-accent hover:bg-accent-foreground/90 dark:bg-primary dark:text-accent-foreground dark:hover:bg-primary/60",
-              )}
+              variant={activeThinkButton === "think" ? "default" : "outline"}
+              className="rounded-2xl"
             >
-              <Brain
-                className={cn(
-                  "size-4",
-                  activeThinkButton === "think" && "text-accent",
-                )}
-              />
-              <span
-                className={cn(
-                  "text-xs",
-                  activeThinkButton === "think" && "text-accent",
-                )}
-              >
-                Think
-              </span>
+              <Brain className="size-4" />
+              <span className="text-xs">Think</span>
             </Button>
             {/* Only show reasoning selector when gemini-2.5-thinking is selected */}
             {(selectedModel.id === "gemini-2.5-thinking" ||
@@ -297,7 +262,7 @@ export const ChatInput = ({
               type="button"
               onClick={stop}
               size="icon"
-              className="cursor-pointer rounded-full"
+              className="cursor-pointer rounded-2xl"
             >
               <div className="animate-spin h-4 w-4">
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -324,7 +289,7 @@ export const ChatInput = ({
               size="icon"
               onClick={submitForm}
               disabled={isLoading || !input.trim()}
-              className="rounded-full"
+              className="rounded-2xl"
             >
               <ArrowUp />
             </Button>
@@ -348,7 +313,7 @@ function PureAttachmentsButton({
         <TooltipTrigger asChild>
           <Button
             size="icon"
-            className="rounded-full border dark:border-zinc-600"
+            className="rounded-2xl border dark:border-zinc-600"
             onClick={async (e) => {
               e.preventDefault();
               fileInputRef.current?.click();

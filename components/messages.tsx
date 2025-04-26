@@ -10,7 +10,7 @@ import {
 } from "./ui/tooltip";
 import { Button } from "./ui/button";
 import { RefreshCcw } from "lucide-react";
-
+import { ReasoningLevel } from "./reasoning-selector";
 export const Messages = ({
   selectedModel,
   reasoningLevel,
@@ -19,7 +19,7 @@ export const Messages = ({
   reload,
 }: {
   selectedModel: string;
-  reasoningLevel: "low" | "medium" | "high";
+  reasoningLevel: ReasoningLevel;
   messages: TMessage[];
   status: "error" | "submitted" | "streaming" | "ready";
   reload: (

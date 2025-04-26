@@ -10,6 +10,7 @@ import { ModelOption } from "./model-picker";
 import { MODELS } from "./model-picker";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { ReasoningLevel } from "./reasoning-selector";
 
 export default function Chat({ chatId }: { chatId: string }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
@@ -21,9 +22,7 @@ export default function Chat({ chatId }: { chatId: string }) {
   const [activeThinkButton, setActiveThinkButton] = useState<"none" | "think">(
     "none",
   );
-  const [reasoningLevel, setReasoningLevel] = useState<
-    "low" | "medium" | "high"
-  >("medium");
+  const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>("high");
 
   // Update model when activeButton changes
   useEffect(() => {

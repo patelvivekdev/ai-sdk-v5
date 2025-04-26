@@ -125,7 +125,7 @@ export function ReasoningMessagePart({
       <div className={cn("flex items-center")}>
         {isReasoning ? (
           <div className="flex items-center">
-            <Button className="rounded-full text-sm flex items-center gap-1.5">
+            <Button className="rounded-2xl text-sm flex items-center gap-1.5">
               <span>Thinking</span>
               <div className="animate-spin">
                 <SpinnerIcon />
@@ -135,7 +135,7 @@ export function ReasoningMessagePart({
         ) : (
           <div className="flex items-center">
             <Button
-              className="rounded-full text-sm flex items-center gap-1.5"
+              className="rounded-2xl text-sm flex items-center gap-1.5"
               onClick={handleToggle}
             >
               <span>Thought for {formattedTime} seconds</span>

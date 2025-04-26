@@ -32,7 +32,7 @@ export function ReasoningSelector({
       <PopoverTrigger asChild>
         <Button
           variant="default"
-          className="flex items-center gap-2 rounded-full"
+          className="flex items-center gap-2 rounded-2xl"
         >
           <BrainCog size={ICON_SIZE[reasoningLevel]} className="text-accent" />
         </Button>

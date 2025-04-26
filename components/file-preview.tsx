@@ -59,7 +59,7 @@ const ImageFilePreview = ({ attachment, onRemove }: AttachmentPreviewProps) => {
 
       {onRemove && (
         <Button
-          className="absolute right-2 top-2 cursor-pointer flex size-5 rounded-full opacity-0 group-hover:opacity-100"
+          className="absolute right-2 top-2 cursor-pointer flex size-5 rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
           type="button"
           size="icon"
           variant="default"
@@ -79,18 +79,17 @@ const GenericFilePreview = ({
 }: AttachmentPreviewProps) => {
   return (
     <div className="relative h-12 w-[150px] shrink-0 group">
-      <div className="flex h-12 border items-center rounded-lg w-full gap-1 py-1 pl-1 pr-3 shadow-sm">
-        <div className="flex size-8 items-center justify-center overflow-hidden rounded-sm">
+      <div className="flex h-12 border-2 border-neutral-400 dark:border-neutral-600 items-center rounded-2xl w-full gap-1 py-1 pl-1 pr-3">
+        <div className="flex size-8 items-center justify-center overflow-hidden rounded-2xl">
           <FileText className="size-6 text-red-500" />
         </div>
         <div className="flex flex-col w-full text-muted-foreground truncate">
           <span className="text-sm">{attachment.name}</span>
-          <span className="text-xs">{attachment.contentType}</span>
         </div>
       </div>
       {onRemove && (
         <Button
-          className="absolute right-2 top-2 cursor-pointer flex size-5 rounded-full opacity-0 group-hover:opacity-100"
+          className="absolute right-2 top-2 cursor-pointer flex size-5 rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
           type="button"
           size="icon"
           variant="default"

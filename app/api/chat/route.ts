@@ -1,12 +1,12 @@
 import { model, type modelID } from "@/ai/providers";
 import { streamText, type UIMessage } from "ai";
+import { ReasoningLevel } from "@/components/reasoning-selector";
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
 const REASONING_LEVEL_MAP = {
-  low: 7000,
-  medium: 15000,
+  low: 15000,
   high: 24576,
 };
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   }: {
     messages: UIMessage[];
     selectedModel: modelID;
-    reasoningLevel: "low" | "medium" | "high";
+    reasoningLevel: ReasoningLevel;
   } = await req.json();
   try {
     const result = streamText({

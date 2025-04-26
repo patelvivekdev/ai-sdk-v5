@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 
-export type ReasoningLevel = "low" | "medium" | "high";
+export type ReasoningLevel = "low" | "high";
 
 interface ReasoningSelectorProps {
   reasoningLevel: ReasoningLevel;
@@ -25,7 +25,7 @@ export function ReasoningSelector({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="default" className="rounded-full">
+        <Button variant="default" className="rounded-2xl">
           <BrainCog className="h-4 w-4" />
           {reasoningLevel.charAt(0).toUpperCase() + reasoningLevel.slice(1)}
         </Button>
@@ -40,7 +40,6 @@ export function ReasoningSelector({
           onValueChange={(value) => setReasoningLevel(value as ReasoningLevel)}
         >
           <DropdownMenuRadioItem value="low">Low</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="medium">Medium</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="high">High</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
