@@ -7,22 +7,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { Message } from "@ai-sdk/react";
 
-interface CreateNewChatButtonProps {
-  setMessages: (messages: Message[]) => void;
-}
-
-export function CreateNewChatButton({ setMessages }: CreateNewChatButtonProps) {
-  const router = useRouter();
-
-  const handleCreateNewChat = () => {
-    router.push("/");
-    setMessages([]);
-    router.refresh();
-  };
-
+export function CreateNewChatButton() {
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip>
@@ -31,12 +17,13 @@ export function CreateNewChatButton({ setMessages }: CreateNewChatButtonProps) {
             variant="default"
             size="sm"
             className={cn("rounded-2xl")}
-            onClick={handleCreateNewChat}
+            asChild
           >
-            <span className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/" className="flex items-center gap-2">
               <PlusCircle className="size-5" />
-              <span className="hidden md:block">new chat</span>
-            </span>
+              <span>new chat</span>
+            </a>
           </Button>
         </TooltipTrigger>
         <TooltipContent>Create a new chat</TooltipContent>

@@ -25,7 +25,7 @@ import useChatStore, { useChats } from "@/hooks/useChatStore";
 export function ChatSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const chats = useChats();
   const handleDelete = useChatStore((state) => state.handleDelete);
@@ -73,7 +73,7 @@ export function ChatSidebar() {
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {sortedChats?.length === 0 ? (
+              {!sortedChats || sortedChats.length === 0 ? (
                 <div className={`flex items-center justify-center py-3 px-4`}>
                   <div className="flex items-center gap-3 w-full px-3 py-2 rounded-md border border-dashed border-border/50 bg-background/50">
                     <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -84,7 +84,7 @@ export function ChatSidebar() {
                 </div>
               ) : (
                 <AnimatePresence initial={false}>
-                  {sortedChats?.map((chat) => (
+                  {sortedChats.map((chat) => (
                     <motion.div
                       key={chat.id}
                       initial={{ opacity: 0, height: 0, y: -10 }}
@@ -112,6 +112,9 @@ export function ChatSidebar() {
                             prefetch={true}
                             onMouseEnter={() => {
                               getMessagesById(chat.id);
+                            }}
+                            onClick={() => {
+                              setOpenMobile(false);
                             }}
                           >
                             <div className="flex items-center min-w-0 overflow-hidden flex-1 pr-2">

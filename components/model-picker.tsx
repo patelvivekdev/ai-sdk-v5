@@ -83,14 +83,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
 
   // Thinking models
-  "gemini-2.0-thinking": {
-    id: "gemini-2.0-thinking",
-    name: "Gemini 2.0 Flash",
-    description: "A model that combines advanced reasoning features",
-    vision: true,
-    reasoning: true,
-    search: false,
-  },
   "gemini-2.5-thinking": {
     id: "gemini-2.5-thinking",
     name: "Gemini 2.5 Flash",

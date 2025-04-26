@@ -46,10 +46,6 @@ export const model = customProvider({
       },
     }),
 
-    // Gemini with reasoning capabilities
-    "gemini-2.0-thinking": openrouter(
-      "google/gemini-2.0-flash-thinking-exp:free",
-    ),
     "gemini-2.5-thinking": google("gemini-2.5-flash-preview-04-17"),
     "gemini-2.5-pro-thinking": google("gemini-2.5-pro-exp-03-25"),
   },

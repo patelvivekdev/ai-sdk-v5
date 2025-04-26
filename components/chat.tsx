@@ -50,7 +50,7 @@ export default function Chat({
     }
   }, [activeSearchButton, activeThinkButton]);
 
-  const { messages, setMessages, status, reload } = useChat({
+  const { messages, status, reload } = useChat({
     id: chatId,
     initialMessages: initialMessages,
     body: {
@@ -90,7 +90,7 @@ export default function Chat({
 
   return (
     <div className="h-dvh flex flex-col justify-center w-full stretch">
-      <Header setMessages={setMessages} />
+      <Header />
       {messages.length === 0 ? (
         <div className="max-w-3xl mx-auto w-full">
           <ProjectOverview />
