@@ -59,9 +59,9 @@ export const ChatInput = ({
       selectedModel: selectedModel.id,
       reasoningLevel: reasoningLevel,
     },
-    onFinish(message) {
+    onFinish: async (message) => {
       console.log("message", message);
-      const savedMessages = getMessagesById(chatId);
+      const savedMessages = await getMessagesById(chatId);
       saveMessages(chatId, [...savedMessages, message]);
     },
     onError: (error) => {
@@ -167,7 +167,7 @@ export const ChatInput = ({
     }
   };
 
-  const submitForm = useCallback(() => {
+  const submitForm = useCallback(async () => {
     window.history.replaceState({}, "", `/c/${chatId}`);
     const userMessage: Message = {
       id: generateId(),
@@ -184,22 +184,24 @@ export const ChatInput = ({
     handleSubmit(undefined, {
       experimental_attachments: attachment ? [attachment] : [],
     });
-    saveMessages(chatId, [...getMessagesById(chatId), userMessage]);
+    const messages = await getMessagesById(chatId);
+    saveMessages(chatId, [...messages, userMessage]);
     setAttachment(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   }, [attachment, handleSubmit, chatId, getMessagesById, saveMessages, input]);
 
-  const removeLatestMessage = () => {
-    const updatedMessages = getMessagesById(chatId).slice(0, -1);
+  const removeLatestMessage = async () => {
+    const messages = await getMessagesById(chatId);
+    const updatedMessages = messages.slice(0, -1);
     saveMessages(chatId, updatedMessages);
     return updatedMessages;
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     stop();
-    removeLatestMessage();
+    await removeLatestMessage();
   };
 
   return (

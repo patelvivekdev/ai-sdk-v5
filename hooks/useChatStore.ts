@@ -1,92 +1,75 @@
 import { Message } from "ai";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-interface ChatSession {
-  messages: Message[];
-  createdAt: string;
-}
+import { useLiveQuery } from "dexie-react-hooks";
+import { ChatSession, db } from "@/lib/db";
 
 interface State {
-  chats: Record<string, ChatSession>;
   selectedModel: string | null;
 }
 
 interface Actions {
   setSelectedModel: (selectedModel: string) => void;
-  getChatById: (chatId: string) => ChatSession | undefined;
-  getMessagesById: (chatId: string) => Message[];
-  saveMessages: (chatId: string, messages: Message[]) => void;
-  handleDelete: (chatId: string, messageId?: string) => void;
+  getChatById: (chatId: string) => Promise<ChatSession | undefined>;
+  getMessagesById: (chatId: string) => Promise<Message[]>;
+  saveMessages: (chatId: string, messages: Message[]) => Promise<void>;
+  handleDelete: (chatId: string, messageId?: string) => Promise<void>;
 }
 
-const useChatStore = create<State & Actions>()(
-  persist(
-    (set, get) => ({
-      chats: {},
-      selectedModel: null,
+// Store only in-memory state in Zustand
+const useChatStore = create<State & Actions>()((set) => ({
+  selectedModel: null,
 
-      setSelectedModel: (selectedModel) => set({ selectedModel }),
-      getChatById: (chatId) => {
-        const state = get();
-        return state.chats[chatId];
-      },
-      getMessagesById: (chatId) => {
-        const state = get();
-        return state.chats[chatId]?.messages || [];
-      },
-      saveMessages: (chatId, messages) => {
-        set((state) => {
-          const existingChat = state.chats[chatId];
+  setSelectedModel: (selectedModel) => set({ selectedModel }),
 
-          return {
-            chats: {
-              ...state.chats,
-              [chatId]: {
-                messages: [...messages],
-                createdAt: existingChat?.createdAt || new Date().toISOString(),
-              },
-            },
-          };
+  getChatById: async (chatId) => {
+    return await db.chats.get(chatId);
+  },
+
+  getMessagesById: async (chatId) => {
+    const chat = await db.chats.get(chatId);
+    return chat?.messages || [];
+  },
+
+  saveMessages: async (chatId, messages) => {
+    const existingChat = await db.chats.get(chatId);
+
+    await db.chats.put({
+      id: chatId,
+      messages: [...messages],
+      createdAt: existingChat?.createdAt || new Date().toISOString(),
+    });
+  },
+
+  handleDelete: async (chatId, messageId) => {
+    if (messageId) {
+      // Delete specific message
+      const chat = await db.chats.get(chatId);
+      if (chat) {
+        const updatedMessages = chat.messages.filter(
+          (message) => message.id !== messageId,
+        );
+
+        await db.chats.update(chatId, {
+          messages: updatedMessages,
         });
-      },
-      handleDelete: (chatId, messageId) => {
-        set((state) => {
-          const chat = state.chats[chatId];
-          if (!chat) return state;
+      }
+    } else {
+      // Delete entire chat
+      await db.chats.delete(chatId);
+    }
+  },
+}));
 
-          // If messageId is provided, delete specific message
-          if (messageId) {
-            const updatedMessages = chat.messages.filter(
-              (message) => message.id !== messageId,
-            );
-            return {
-              chats: {
-                ...state.chats,
-                [chatId]: {
-                  ...chat,
-                  messages: updatedMessages,
-                },
-              },
-            };
-          }
+// Helper hooks for using Dexie live queries with the store
+export const useChats = () => {
+  return useLiveQuery(() => db.chats.toArray());
+};
 
-          // If no messageId, delete the entire chat
-          const { [chatId]: _, ...remainingChats } = state.chats;
-          return {
-            chats: remainingChats,
-          };
-        });
-      },
-    }),
-    {
-      name: "ai-sdk-gemini-ui-state",
-      partialize: (state) => ({
-        chats: state.chats,
-        selectedModel: state.selectedModel,
-      }),
-    },
-  ),
-);
+export const useChatById = (chatId: string | null) => {
+  return useLiveQuery(
+    () => (chatId ? db.chats.get(chatId) : undefined),
+    [chatId],
+  );
+};
 
 export default useChatStore;

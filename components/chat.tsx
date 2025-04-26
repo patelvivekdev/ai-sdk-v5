@@ -57,9 +57,8 @@ export default function Chat({
       selectedModel: selectedModel.id,
       reasoningLevel: reasoningLevel,
     },
-    onFinish(message) {
-      console.log("message", message);
-      const savedMessages = getMessagesById(chatId);
+    onFinish: async (message) => {
+      const savedMessages = await getMessagesById(chatId);
       saveMessages(chatId, [...savedMessages, message]);
     },
     onError: (error) => {
@@ -70,16 +69,16 @@ export default function Chat({
     },
   });
 
-  const removeLatestAssistantMessage = () => {
+  const removeLatestAssistantMessage = async () => {
     const updatedMessages = messages.filter(
       (message) => message.role !== "assistant",
     );
-    saveMessages(chatId, updatedMessages);
+    await saveMessages(chatId, updatedMessages);
     return updatedMessages;
   };
 
-  const handleReloadChat = () => {
-    removeLatestAssistantMessage();
+  const handleReloadChat = async () => {
+    await removeLatestAssistantMessage();
     const requestOptions: ChatRequestOptions = {
       body: {
         selectedModel: selectedModel.id,
