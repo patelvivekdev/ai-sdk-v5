@@ -60,7 +60,6 @@ export const ChatInput = ({
       reasoningLevel: reasoningLevel,
     },
     onFinish: async (message) => {
-      console.log("message", message);
       const savedMessages = await getMessagesById(chatId);
       saveMessages(chatId, [...savedMessages, message]);
     },

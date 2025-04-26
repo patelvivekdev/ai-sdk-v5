@@ -1,12 +1,18 @@
+import { Message } from "@ai-sdk/react";
 import { CreateNewChatButton } from "./create-new-chat";
 import { ThemeToggle } from "./theme-toggle";
 import { SidebarTrigger } from "./ui/sidebar";
-export const Header = () => {
+
+interface HeaderProps {
+  setMessages: (messages: Message[]) => void;
+}
+
+export const Header = ({ setMessages }: HeaderProps) => {
   return (
     <div className="w-full z-50 fixed top-0 left-0 flex py-2 px-3 items-center justify-between">
       <SidebarTrigger />
       <div className="flex items-center space-x-2">
-        <CreateNewChatButton />
+        <CreateNewChatButton setMessages={setMessages} />
         <ThemeToggle />
       </div>
     </div>
