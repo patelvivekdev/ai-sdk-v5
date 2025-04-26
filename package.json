@@ -5,10 +5,10 @@
   "author": "Vivek Patel <me@patelvivek.dev>",
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prod": "next build && next start",
+    "prod": "next build --turbopack && next start",
     "format": "prettier --write ."
   },
   "dependencies": {
