@@ -297,7 +297,7 @@ export const ChatInput = ({
             )}
           </div>
           {/* Right side - Submit/Stop button */}
-          {status === "streaming" || status === "submitted" ? (
+          {isLoading ? (
             <Button
               type="button"
               onClick={handleStop}
