@@ -27,6 +27,7 @@ import useChatStore from "@/hooks/useChatStore";
 
 interface InputProps {
   chatId: string;
+  initialMessages: Message[];
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
   activeSearchButton: "none" | "search";
@@ -39,6 +40,7 @@ interface InputProps {
 
 export const ChatInput = ({
   chatId,
+  initialMessages,
   selectedModel,
   setSelectedModel,
   activeSearchButton,
@@ -55,6 +57,7 @@ export const ChatInput = ({
 
   const { input, handleInputChange, handleSubmit, status, stop } = useChat({
     id: chatId,
+    initialMessages: initialMessages,
     body: {
       selectedModel: selectedModel.id,
       reasoningLevel: reasoningLevel,
@@ -179,6 +182,7 @@ export const ChatInput = ({
           text: input,
         },
       ],
+      experimental_attachments: attachment ? [attachment] : [],
     };
     handleSubmit(undefined, {
       experimental_attachments: attachment ? [attachment] : [],

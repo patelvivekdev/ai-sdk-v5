@@ -110,6 +110,7 @@ export default function Chat({
       >
         <ChatInput
           chatId={chatId}
+          initialMessages={initialMessages}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
           activeSearchButton={activeSearchButton}

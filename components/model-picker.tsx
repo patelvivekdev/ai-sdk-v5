@@ -3,9 +3,7 @@ import type { modelID } from "@/ai/providers";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
@@ -16,7 +14,6 @@ import { cn } from "@/lib/utils";
 export interface ModelOption {
   id: modelID;
   name: string;
-  description: string;
   vision: boolean;
   reasoning: boolean;
   search: boolean;
@@ -28,8 +25,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.0-flash": {
     id: "gemini-2.0-flash",
     name: "Gemini 2.0 Flash",
-    description:
-      "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
     reasoning: false,
     search: false,
@@ -37,8 +32,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-flash": {
     id: "gemini-2.5-flash",
     name: "Gemini 2.5 Flash",
-    description:
-      "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
     reasoning: false,
     search: false,
@@ -48,8 +41,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.0-search": {
     id: "gemini-2.0-search",
     name: "Gemini 2.0 Flash",
-    description:
-      "A powerful search model that provides accurate and relevant search results",
     vision: true,
     reasoning: false,
     search: true,
@@ -57,8 +48,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-search": {
     id: "gemini-2.5-search",
     name: "Gemini 2.5 Flash",
-    description:
-      "Our flagship LLM that delivers unfiltered insights and raw intelligence",
     vision: true,
     reasoning: false,
     search: true,
@@ -68,7 +57,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-flash-search-thinking": {
     id: "gemini-2.5-flash-search-thinking",
     name: "Gemini 2.5 Flash",
-    description: "A model that combines advanced search and thinking features",
     vision: true,
     reasoning: true,
     search: true,
@@ -76,7 +64,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-pro-search-thinking": {
     id: "gemini-2.5-pro-search-thinking",
     name: "Gemini 2.5 Pro",
-    description: "A model that combines advanced search and thinking features",
     vision: true,
     reasoning: true,
     search: true,
@@ -86,7 +73,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-thinking": {
     id: "gemini-2.5-thinking",
     name: "Gemini 2.5 Flash",
-    description: "A model that combines advanced reasoning features",
     vision: true,
     reasoning: true,
     search: false,
@@ -94,7 +80,6 @@ export const MODELS: Record<modelID, ModelOption> = {
   "gemini-2.5-pro-thinking": {
     id: "gemini-2.5-pro-thinking",
     name: "Gemini 2.5 Pro",
-    description: "A model that combines advanced reasoning with pro features",
     vision: true,
     reasoning: true,
     search: false,
@@ -145,10 +130,6 @@ export const ModelPicker = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="">
-        <DropdownMenuLabel className="text-center">
-          Choose a model
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <div className="flex flex-col gap-1">
           {availableModels.map((model) => (
             <DropdownMenuItem

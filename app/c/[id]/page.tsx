@@ -28,5 +28,7 @@ export default function Page() {
     return <Loading />;
   }
 
+  console.log(initialMessages);
+
   return <Chat chatId={id} initialMessages={initialMessages} />;
 }
