@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import { memo } from "react";
 
 function PureTimeStamp({
@@ -7,7 +7,7 @@ function PureTimeStamp({
   formattedTime,
   isUser,
 }: {
-  message: Message;
+  message: UIMessage;
   formattedTime: string;
   isUser: boolean;
 }) {

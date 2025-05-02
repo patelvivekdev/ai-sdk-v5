@@ -190,12 +190,16 @@ export const ChatInput = ({
           type: "text",
           text: input,
         },
-        {
-          type: "file",
-          filename: attachment?.filename,
-          mediaType: attachment?.mediaType || "",
-          url: attachment?.url || "",
-        },
+        ...(attachment
+          ? [
+              {
+                type: "file" as const,
+                filename: attachment.filename,
+                mediaType: attachment.mediaType || "",
+                url: attachment.url || "",
+              },
+            ]
+          : []),
       ],
     };
     handleSubmit(undefined, {

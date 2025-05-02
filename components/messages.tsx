@@ -28,7 +28,7 @@ export const Messages = ({
       className="relative flex-1 overflow-y-scroll pt-8"
     >
       <div className="space-y-4" ref={containerRef}>
-        <div className="mx-auto max-w-3xl pt-8">
+        <div className="mx-auto max-w-3xl space-y-4 pt-8">
           {messages.map((m, i) => (
             <Message key={i} message={m} status={status} />
           ))}

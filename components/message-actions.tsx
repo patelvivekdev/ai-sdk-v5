@@ -1,4 +1,4 @@
-import { Message } from "ai";
+import { UIMessage } from "ai";
 
 import {
   Tooltip,
@@ -10,7 +10,7 @@ import { memo } from "react";
 import { CopyButton } from "@/components/ui/copy-button";
 import { TimeStamp } from "./message-timestamp";
 
-function PureMessageActions({ message }: { message: Message }) {
+function PureMessageActions({ message }: { message: UIMessage }) {
   let formattedTime = "";
   if (message.createdAt) {
     // Convert string timestamp to Date object if it's a string
@@ -28,7 +28,7 @@ function PureMessageActions({ message }: { message: Message }) {
   if (message.role === "user") {
     return (
       <TooltipProvider delayDuration={0}>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center justify-end gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
               <CopyButton content={message.content} />

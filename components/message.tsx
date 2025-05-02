@@ -208,7 +208,7 @@ const PurePreviewMessage = ({
             "group-data-[role=user]/message:w-fit",
           )}
         >
-          <div className="flex w-full flex-col space-y-1">
+          <div className="flex w-full flex-col space-y-0.5">
             {attachments && attachments?.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {attachments.map((attachment) => (
@@ -219,6 +219,7 @@ const PurePreviewMessage = ({
                 ))}
               </div>
             )}
+
             {message.parts?.map((part, i) => {
               switch (part.type) {
                 case "text":
