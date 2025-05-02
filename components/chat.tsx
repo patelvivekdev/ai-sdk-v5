@@ -74,6 +74,7 @@ export default function Chat({
     const requestOptions: ChatRequestOptions = {
       body: {
         selectedModel: selectedModel.id,
+        search: activeSearchButton === "search",
         reasoningLevel: reasoningLevel,
       },
     };
