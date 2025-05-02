@@ -36,7 +36,7 @@ export function ReasoningSelector({
               "bg-primary text-primary-foreground hover:bg-primary! hover:text-primary-foreground!",
           )}
         >
-          <Brain className="size-4 mr-2 text-current" /> Low
+          <Brain className="mr-2 size-4 text-current" /> Low
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setReasoningLevel("high")}
@@ -45,7 +45,7 @@ export function ReasoningSelector({
               "bg-primary text-primary-foreground hover:bg-primary! hover:text-primary-foreground!",
           )}
         >
-          <Brain className="size-4 mr-2 text-current" /> High
+          <Brain className="mr-2 size-4 text-current" /> High
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

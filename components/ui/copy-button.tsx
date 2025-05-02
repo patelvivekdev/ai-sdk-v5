@@ -22,7 +22,7 @@ const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
         variant="outline"
         size="icon"
         className={cn(
-          "relative text-muted-foreground py-1 px-2 h-fit",
+          "text-muted-foreground relative h-fit px-2 py-1",
           className,
         )}
         asChild={asChild}

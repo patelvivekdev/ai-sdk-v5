@@ -33,7 +33,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex h-dvh w-full">
             <ChatSidebar />
-            <main className="flex-1 flex h-dvh flex-col">{children}</main>
+            <main className="flex h-dvh flex-1 flex-col">{children}</main>
           </div>
         </Providers>
       </body>

@@ -51,9 +51,9 @@ export function ChatSidebar() {
 
   return (
     <Sidebar className="z-51">
-      <SidebarHeader className="p-3 border-b border-border flex flex-row items-center justify-between">
+      <SidebarHeader className="border-border flex flex-row items-center justify-between border-b p-3">
         <SidebarTrigger />
-        <div className="flex items-center gap-2 justify-center">
+        <div className="flex items-center justify-center gap-2">
           <Image
             src="/gemini.png"
             alt="Gemini Logo"
@@ -62,22 +62,22 @@ export function ChatSidebar() {
             unoptimized
             quality={100}
           />
-          <div className="font-semibold text-lg text-foreground/90">
+          <div className="text-foreground/90 text-lg font-semibold">
             AISDK + Gemini
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent className="flex flex-col">
-        <SidebarGroup className="flex-1 min-h-0">
+        <SidebarGroup className="min-h-0 flex-1">
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {!sortedChats || sortedChats.length === 0 ? (
-                <div className={`flex items-center justify-center py-3 px-4`}>
-                  <div className="flex items-center gap-3 w-full px-3 py-2 rounded-md border border-dashed border-border/50 bg-background/50">
-                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground font-normal">
+                <div className={`flex items-center justify-center px-4 py-3`}>
+                  <div className="border-border/50 bg-background/50 flex w-full items-center gap-3 rounded-md border border-dashed px-3 py-2">
+                    <MessageSquare className="text-muted-foreground h-4 w-4" />
+                    <span className="text-muted-foreground text-xs font-normal">
                       No conversations yet
                     </span>
                   </div>
@@ -100,7 +100,7 @@ export function ChatSidebar() {
                           }
                           data-active={pathname === `/c/${chat.id}`}
                           className={cn(
-                            "transition-all hover:bg-primary/10 active:bg-primary/15",
+                            "hover:bg-primary/10 active:bg-primary/15 transition-all",
                             pathname === `/c/${chat.id}`
                               ? "bg-secondary/60 hover:bg-secondary/60"
                               : "",
@@ -108,7 +108,7 @@ export function ChatSidebar() {
                         >
                           <Link
                             href={`/c/${chat.id}`}
-                            className="flex items-center justify-between w-full gap-1"
+                            className="flex w-full items-center justify-between gap-1"
                             prefetch={true}
                             onMouseEnter={() => {
                               getMessagesById(chat.id);
@@ -117,7 +117,7 @@ export function ChatSidebar() {
                               setOpenMobile(false);
                             }}
                           >
-                            <div className="flex items-center min-w-0 overflow-hidden flex-1 pr-2">
+                            <div className="flex min-w-0 flex-1 items-center overflow-hidden pr-2">
                               <MessageSquare
                                 className={cn(
                                   "h-4 w-4 flex-shrink-0",
@@ -145,7 +145,7 @@ export function ChatSidebar() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-6 w-6 text-muted-foreground hover:text-foreground flex-shrink-0"
+                              className="text-muted-foreground hover:text-foreground h-6 w-6 flex-shrink-0"
                               onClick={(e) => handleDeleteChat(chat.id, e)}
                               title="Delete chat"
                             >

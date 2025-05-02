@@ -1,6 +1,7 @@
 import { model, type modelID } from "@/ai/providers";
 import { streamText, type UIMessage } from "ai";
 import { ReasoningLevel } from "@/components/reasoning-selector";
+import { GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
@@ -14,10 +15,12 @@ export async function POST(req: Request) {
   const {
     messages,
     selectedModel,
+    search,
     reasoningLevel,
   }: {
     messages: UIMessage[];
     selectedModel: modelID;
+    search: boolean;
     reasoningLevel: ReasoningLevel;
   } = await req.json();
   try {
@@ -26,16 +29,38 @@ export async function POST(req: Request) {
       messages,
       providerOptions: {
         google: {
+          useSearchGrounding: search,
+          dynamicRetrievalConfig: {
+            mode: "MODE_DYNAMIC",
+            dynamicThreshold: 0.1,
+          },
           thinkingConfig:
-            selectedModel === "gemini-2.5-thinking" ||
-            selectedModel === "gemini-2.5-flash-search-thinking"
+            selectedModel === "gemini-2.5-flash-thinking"
               ? {
                   thinkingBudget: REASONING_LEVEL_MAP[reasoningLevel],
                 }
               : {
                   thinkingBudget: 0,
                 },
-        },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_CIVIC_INTEGRITY",
+              threshold: "BLOCK_NONE",
+            },
+          ],
+        } satisfies GoogleGenerativeAIProviderOptions,
       },
     });
 

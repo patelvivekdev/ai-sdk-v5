@@ -39,7 +39,7 @@ export function ReasoningSelector({
       </PopoverTrigger>
       <PopoverContent className="w-80 pb-8">
         <div className="space-y-4">
-          <h4 className="font-medium text-sm">Thinking Depth</h4>
+          <h4 className="text-sm font-medium">Thinking Depth</h4>
           <div className="relative">
             <Slider
               value={[Number(reasoningLevel)]}
@@ -50,7 +50,7 @@ export function ReasoningSelector({
               step={1}
               className="relative flex w-full touch-none items-center select-none"
             />
-            <div className="absolute top-full left-0 w-full flex justify-between mt-1.5 px-1">
+            <div className="absolute top-full left-0 mt-1.5 flex w-full justify-between px-1">
               <Label className="cursor-default text-xs">Low</Label>
               <Label className="cursor-default text-xs">Medium</Label>
               <Label className="cursor-default text-xs">High</Label>

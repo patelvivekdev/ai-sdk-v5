@@ -1,6 +1,6 @@
 "use client";
 
-import type { Message as TMessage } from "ai";
+import type { UIMessage } from "ai";
 import { AnimatePresence, motion } from "motion/react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import equal from "fast-deep-equal";
@@ -125,7 +125,7 @@ export function ReasoningMessagePart({
       <div className={cn("flex items-center")}>
         {isReasoning ? (
           <div className="flex items-center">
-            <Button className="rounded-2xl text-sm flex items-center gap-1.5">
+            <Button className="flex items-center gap-1.5 rounded-2xl text-sm">
               <span>Thinking</span>
               <div className="animate-spin">
                 <SpinnerIcon />
@@ -135,26 +135,26 @@ export function ReasoningMessagePart({
         ) : (
           <div className="flex items-center">
             <Button
-              className="rounded-2xl text-sm flex items-center gap-1.5"
+              className="flex items-center gap-1.5 rounded-2xl text-sm"
               onClick={handleToggle}
             >
               <span>Thought for {formattedTime} seconds</span>
               <ChevronDownIcon
                 className={cn("h-4 w-4 transition-transform", {
-                  "transform rotate-180": !isExpanded,
+                  "rotate-180 transform": !isExpanded,
                 })}
               />
             </Button>
           </div>
         )}
       </div>
-      <div className="overflow-hidden ml-2">
+      <div className="ml-2 overflow-hidden">
         <AnimatePresence initial={false}>
           {isExpanded && (
             <motion.div
               key="reasoning"
               ref={contentRef}
-              className="text-sm dark:text-zinc-400 text-zinc-600 flex flex-col gap-4 border-l-2 dark:border-zinc-800 border-zinc-200 mt-3 px-2"
+              className="mt-3 flex flex-col gap-4 border-l-2 border-zinc-200 px-2 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
               initial="collapsed"
               animate="expanded"
               exit="collapsed"
@@ -188,15 +188,15 @@ const PurePreviewMessage = ({
   message,
   status,
 }: {
-  message: TMessage;
+  message: UIMessage;
   status: "error" | "submitted" | "streaming" | "ready";
 }) => {
-  const attachments = message.experimental_attachments;
+  const attachments = message.parts?.filter((part) => part.type === "file");
   const sources = message.parts?.filter((part) => part.type === "source");
   return (
     <AnimatePresence key={message.id}>
       <motion.div
-        className="w-full mx-auto px-4 group/message mt-2"
+        className="group/message mx-auto mt-2 w-full px-4"
         initial={{ y: 5, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         key={`message-${message.id}`}
@@ -204,13 +204,13 @@ const PurePreviewMessage = ({
       >
         <div
           className={cn(
-            "flex gap-4 w-full group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl",
+            "flex w-full gap-4 group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl",
             "group-data-[role=user]/message:w-fit",
           )}
         >
-          <div className="flex flex-col w-full space-y-1">
+          <div className="flex w-full flex-col space-y-1">
             {attachments && attachments?.length > 0 && (
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-wrap gap-2">
                 {attachments.map((attachment) => (
                   <AttachmentPreview
                     attachment={attachment}
@@ -227,11 +227,11 @@ const PurePreviewMessage = ({
                       initial={{ y: 5, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       key={`message-${message.id}-part-${i}`}
-                      className="flex flex-row gap-2 items-start w-full pb-2"
+                      className="flex w-full flex-row items-start gap-2 pb-2"
                     >
                       <div
                         className={cn("flex flex-col gap-4", {
-                          "bg-secondary text-secondary-foreground px-3 py-2 rounded-tl-xl rounded-tr-xl rounded-bl-xl":
+                          "bg-secondary text-secondary-foreground rounded-tl-xl rounded-tr-xl rounded-bl-xl px-3 py-2":
                             message.role === "user",
                         })}
                       >
@@ -259,7 +259,7 @@ const PurePreviewMessage = ({
             })}
             <MessageActions key={`action-${message.id}`} message={message} />
             {sources && sources.length > 0 && (
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-wrap gap-2">
                 {sources.map((source) => (
                   <SourcePreview key={source.source.id} source={source} />
                 ))}
@@ -287,21 +287,21 @@ export const ThinkingMessage = () => {
 
   return (
     <motion.div
-      className="w-full mx-auto max-w-3xl mt-2 px-4 group/message "
+      className="group/message mx-auto mt-2 w-full max-w-3xl px-4"
       initial={{ y: 5, opacity: 0 }}
       animate={{ y: 0, opacity: 1, transition: { delay: 1 } }}
       data-role={role}
     >
       <div
         className={cx(
-          "flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl",
+          "flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2",
           {
             "group-data-[role=user]/message:bg-muted": true,
           },
         )}
       >
-        <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-4 text-muted-foreground">
+        <div className="flex w-full flex-col gap-2">
+          <div className="text-muted-foreground flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <div className="animate-spin">
                 <SpinnerIcon />

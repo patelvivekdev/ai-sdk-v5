@@ -24,7 +24,7 @@ function PureTimeStamp({
       dateTime={dateTime}
       className={cn(
         "block px-1 text-xs opacity-50",
-        "duration-500 animate-in fade-in-0",
+        "animate-in fade-in-0 duration-500",
         isUser && "text-right",
       )}
     >

@@ -23,7 +23,7 @@ export const ImageOverlay = ({
       <DialogDescription className="sr-only">
         Full size view of {imageAlt}
       </DialogDescription>
-      <div className="relative w-full h-[80vh]">
+      <div className="relative h-[80vh] w-full">
         <Image
           src={imageUrl}
           alt={`Full size view of ${imageAlt}`}

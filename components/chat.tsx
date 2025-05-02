@@ -1,6 +1,6 @@
 "use client";
 
-import { Message, useChat } from "@ai-sdk/react";
+import { UIMessage, useChat } from "@ai-sdk/react";
 import { useState, useEffect } from "react";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "@/components/messages";
@@ -19,7 +19,7 @@ export default function Chat({
   initialMessages,
 }: {
   chatId: string;
-  initialMessages: Message[];
+  initialMessages: UIMessage[];
 }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
     MODELS["gemini-2.5-flash"],
@@ -36,25 +36,20 @@ export default function Chat({
 
   // Update model when activeButton changes
   useEffect(() => {
-    if (activeSearchButton === "search") {
-      setSelectedModel(MODELS["gemini-2.5-search"]);
-    } else if (activeThinkButton === "think") {
+    if (activeThinkButton === "think") {
       // Always set a default thinking model when switching to think mode
-      setSelectedModel(MODELS["gemini-2.5-thinking"]);
-    } else if (activeSearchButton === "none" && activeThinkButton === "none") {
+      setSelectedModel(MODELS["gemini-2.5-flash-thinking"]);
+    } else {
       setSelectedModel(MODELS["gemini-2.5-flash"]);
     }
-
-    if (activeSearchButton === "search" && activeThinkButton === "think") {
-      setSelectedModel(MODELS["gemini-2.5-flash-search-thinking"]);
-    }
-  }, [activeSearchButton, activeThinkButton]);
+  }, [activeThinkButton]);
 
   const { messages, status, reload } = useChat({
     id: chatId,
     initialMessages: initialMessages,
     body: {
       selectedModel: selectedModel.id,
+      search: activeSearchButton === "search",
       reasoningLevel: reasoningLevel,
     },
     onFinish: async (message) => {
@@ -62,10 +57,7 @@ export default function Chat({
       saveMessages(chatId, [...savedMessages, message]);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        description:
-          "Please try again or contact support if the issue persists.",
-      });
+      toast.error(error.message);
     },
   });
 
@@ -89,10 +81,10 @@ export default function Chat({
   };
 
   return (
-    <div className="h-dvh flex flex-col justify-center w-full stretch">
+    <div className="stretch flex h-dvh w-full flex-col justify-center">
       <Header />
       {messages.length === 0 ? (
-        <div className="max-w-3xl mx-auto w-full">
+        <div className="mx-auto w-full max-w-3xl">
           <ProjectOverview />
         </div>
       ) : (
@@ -104,7 +96,7 @@ export default function Chat({
       )}
       <form
         className={cn(
-          "bg-secondary/90 flex w-11/12 max-w-3xl mx-auto sm:px-2 p-2 mt-4 shadow-md border-2 border-secondary-foreground/20",
+          "bg-secondary/90 border-secondary-foreground/20 mx-auto mt-4 flex w-11/12 max-w-3xl border-2 p-2 shadow-md sm:px-2",
           messages.length > 0 ? "rounded-t-2xl border-b-0" : "rounded-2xl",
         )}
       >

@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import useChatStore from "@/hooks/useChatStore";
 import Chat from "@/components/chat";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import Loading from "./loading";
 
 export default function Page() {
   const { id } = useParams() as { id: string };
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
+  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
   const getChatById = useChatStore((state) => state.getChatById);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,8 +27,6 @@ export default function Page() {
   if (isLoading) {
     return <Loading />;
   }
-
-  console.log(initialMessages);
 
   return <Chat chatId={id} initialMessages={initialMessages} />;
 }

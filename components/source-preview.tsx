@@ -13,7 +13,7 @@ export function SourcePreview({ source }: { source: SourceUIPart }) {
     >
       <Badge
         variant="outline"
-        className="px-2 py-1 gap-1.5 hover:bg-muted/50 transition-colors"
+        className="hover:bg-muted/50 gap-1.5 px-2 py-1 transition-colors"
       >
         <LinkIcon size={12} />
         <span className="text-sm">{source.source.title}</span>

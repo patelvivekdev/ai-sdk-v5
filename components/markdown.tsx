@@ -28,8 +28,8 @@ const CodeBlock = memo(
     );
 
     return (
-      <div className="rounded-md border bg-muted/30 w-[85dvw] my-2 md:max-w-2xl">
-        <div className="flex items-center justify-between px-4 py-2 border-b">
+      <div className="bg-muted/30 my-2 w-[85dvw] rounded-md border md:max-w-2xl">
+        <div className="flex items-center justify-between border-b px-4 py-2">
           <div className="flex items-center space-x-2 text-neutral-500 dark:text-neutral-400">
             {selectedLanguage?.icon ? (
               <selectedLanguage.icon className="size-5" />
@@ -48,7 +48,7 @@ const CodeBlock = memo(
           language={language}
           PreTag="pre"
           className={cn(
-            "overflow-x-scroll rounded-b-md !m-0 no-scrollbar",
+            "no-scrollbar !m-0 overflow-x-scroll rounded-b-md",
             className,
           )}
         >
@@ -86,7 +86,7 @@ const components: Partial<Components> = {
     return (
       <code
         className={cn(
-          "rounded bg-muted/30 px-[0.3rem] py-[0.2rem] font-mono text-sm",
+          "bg-muted/30 rounded px-[0.3rem] py-[0.2rem] font-mono text-sm",
           className,
         )}
         {...props}
@@ -98,7 +98,7 @@ const components: Partial<Components> = {
   pre: ({ children }) => <>{children}</>,
   ol: ({ children, ...props }) => {
     return (
-      <ol className="list-decimal list-outside ml-4" {...props}>
+      <ol className="ml-4 list-outside list-decimal" {...props}>
         {children}
       </ol>
     );
@@ -112,7 +112,7 @@ const components: Partial<Components> = {
   },
   ul: ({ children, ...props }) => {
     return (
-      <ul className="list-disc list-outside ml-4" {...props}>
+      <ul className="ml-4 list-outside list-disc" {...props}>
         {children}
       </ul>
     );
@@ -189,11 +189,8 @@ const components: Partial<Components> = {
     <hr className="my-2" {...props} />
   ),
   table: ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-6 w-full overflow-y-auto">
-      <table
-        className="relative w-full overflow-hidden border-none text-sm"
-        {...props}
-      >
+    <div className="my-6 w-full overflow-x-auto">
+      <table className="relative w-full border-none text-sm" {...props}>
         {children}
       </table>
     </div>

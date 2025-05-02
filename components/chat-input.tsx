@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Attachment, generateId, Message } from "ai";
+import { generateId, UIMessage, FileUIPart } from "ai";
 import { useAutosizeTextArea } from "@/hooks/use-autosize-textarea";
 import { toast } from "sonner";
 import { useChat } from "@ai-sdk/react";
@@ -27,7 +27,7 @@ import useChatStore from "@/hooks/useChatStore";
 
 interface InputProps {
   chatId: string;
-  initialMessages: Message[];
+  initialMessages: UIMessage[];
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
   activeSearchButton: "none" | "search";
@@ -60,6 +60,7 @@ export const ChatInput = ({
     initialMessages: initialMessages,
     body: {
       selectedModel: selectedModel.id,
+      search: activeSearchButton === "search",
       reasoningLevel: reasoningLevel,
     },
     onFinish: async (message) => {
@@ -67,46 +68,47 @@ export const ChatInput = ({
       saveMessages(chatId, [...savedMessages, message]);
     },
     onError: (error) => {
-      toast.error(error.message, {
-        description:
-          "Please try again or contact support if the issue persists.",
-      });
+      toast.error(error.message);
     },
   });
 
   const isLoading = status === "streaming" || status === "submitted";
-  const [attachment, setAttachment] = useState<Attachment | undefined>(
+  const [attachment, setAttachment] = useState<FileUIPart | undefined>(
     undefined,
   );
 
   // File upload
-  const uploadFile = async (file: File): Promise<Attachment | undefined> => {
+  const uploadFile = async (file: File): Promise<FileUIPart | undefined> => {
     try {
       const reader = new FileReader();
 
-      const attachment: Promise<Attachment> = new Promise((resolve, reject) => {
+      const attachment: Promise<FileUIPart> = new Promise((resolve, reject) => {
         reader.onload = () => {
-          let contentType = file.type;
+          let mediaType = file.type;
 
           // Handle special file types
-          if (!contentType) {
+          if (!mediaType) {
             const extension = file.name.split(".").pop()?.toLowerCase();
             switch (extension) {
               case "pdf":
-                contentType = "application/pdf";
+                mediaType = "application/pdf";
                 break;
               case "md":
-                contentType = "text/markdown";
+                mediaType = "text/markdown";
+                break;
+              case "txt":
+                mediaType = "text/plain";
                 break;
               default:
-                contentType = "application/octet-stream";
+                mediaType = "application/octet-stream";
             }
           }
 
           resolve({
-            name: file.name,
-            contentType,
+            filename: file.name,
+            mediaType,
             url: reader.result as string,
+            type: "file",
           });
         };
 
@@ -145,11 +147,18 @@ export const ChatInput = ({
     if (selectedFiles) {
       const validFiles = Array.from(selectedFiles).filter(
         (file) =>
-          file.type.startsWith("image/") || file.type === "application/pdf",
+          file.type.startsWith("image/") ||
+          file.type === "application/pdf" ||
+          file.type === "text/markdown" ||
+          file.type === "text/plain" ||
+          file.name.endsWith(".md") ||
+          file.name.endsWith(".txt"),
       );
 
       if (validFiles.length === 0) {
-        toast.error("Please select a valid image file or PDF file.");
+        toast.error(
+          "Please select a valid image, PDF, markdown, or text file.",
+        );
         return;
       }
 
@@ -171,7 +180,7 @@ export const ChatInput = ({
 
   const submitForm = useCallback(async () => {
     window.history.replaceState({}, "", `/c/${chatId}`);
-    const userMessage: Message = {
+    const userMessage: UIMessage = {
       id: generateId(),
       role: "user",
       content: input,
@@ -181,11 +190,16 @@ export const ChatInput = ({
           type: "text",
           text: input,
         },
+        {
+          type: "file",
+          filename: attachment?.filename,
+          mediaType: attachment?.mediaType || "",
+          url: attachment?.url || "",
+        },
       ],
-      experimental_attachments: attachment ? [attachment] : [],
     };
     handleSubmit(undefined, {
-      experimental_attachments: attachment ? [attachment] : [],
+      files: attachment ? [attachment] : [],
     });
     const messages = await getMessagesById(chatId);
     saveMessages(chatId, [...messages, userMessage]);
@@ -211,12 +225,12 @@ export const ChatInput = ({
     <div className="relative w-full">
       <input
         type="file"
-        className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
+        className="pointer-events-none fixed -top-4 -left-4 size-0.5 opacity-0"
         ref={fileInputRef}
         onChange={handleFileChange}
         tabIndex={-1}
       />
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row items-center justify-between">
         {attachment && (
           <div className="overflow-hidden">
             <AttachmentPreview
@@ -229,14 +243,13 @@ export const ChatInput = ({
           <ModelPicker
             setSelectedModel={setSelectedModel}
             selectedModel={selectedModel}
-            activeSearchButton={activeSearchButton}
             activeThinkButton={activeThinkButton}
           />
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <ShadcnTextarea
-          className="resize-none w-full p-2 border-0 shadow-none border-none focus-visible:ring-0 focus-visible:outline-none"
+          className="w-full resize-none border-0 border-none p-2 shadow-none focus-visible:ring-0 focus-visible:outline-none"
           value={input}
           ref={textareaRef}
           autoFocus
@@ -253,7 +266,7 @@ export const ChatInput = ({
         />
 
         {/* Control bar at the bottom with all elements */}
-        <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center justify-between">
           {/* center - Model picker and utility buttons */}
           <div className="flex items-center space-x-2 px-1">
             {selectedModel.vision ? (
@@ -292,8 +305,7 @@ export const ChatInput = ({
               <span className="text-xs">Think</span>
             </Button>
             {/* Only show reasoning selector when gemini-2.5-thinking is selected */}
-            {(selectedModel.id === "gemini-2.5-thinking" ||
-              selectedModel.id === "gemini-2.5-flash-search-thinking") && (
+            {selectedModel.id === "gemini-2.5-flash-thinking" && (
               <ReasoningSelector
                 reasoningLevel={reasoningLevel}
                 setReasoningLevel={setReasoningLevel}
@@ -308,7 +320,7 @@ export const ChatInput = ({
               size="icon"
               className="cursor-pointer rounded-2xl"
             >
-              <div className="animate-spin h-4 w-4">
+              <div className="h-4 w-4 animate-spin">
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"

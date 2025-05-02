@@ -35,7 +35,7 @@ export function ScrollButton({
             variant="secondary"
             size="icon"
             className={cn(
-              "absolute bottom-4 rounded-full shadow-lg hover:bg-muted",
+              "hover:bg-muted absolute bottom-4 rounded-full shadow-lg",
               alignmentClasses[alignment],
               className,
             )}

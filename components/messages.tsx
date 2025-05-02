@@ -1,4 +1,4 @@
-import type { Message as TMessage } from "ai";
+import type { UIMessage } from "ai";
 import { Message, ThinkingMessage } from "./message";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { ScrollButton } from "./scroll-button";
@@ -16,7 +16,7 @@ export const Messages = ({
   status,
   handleReloadChat,
 }: {
-  messages: TMessage[];
+  messages: UIMessage[];
   status: "error" | "submitted" | "streaming" | "ready";
   handleReloadChat: () => void;
 }) => {
@@ -25,10 +25,10 @@ export const Messages = ({
   return (
     <div
       data-radix-scroll-area-viewport
-      className="flex-1 overflow-y-scroll relative pt-8"
+      className="relative flex-1 overflow-y-scroll pt-8"
     >
-      <div className="space-y-4 " ref={containerRef}>
-        <div className="max-w-3xl mx-auto pt-8">
+      <div className="space-y-4" ref={containerRef}>
+        <div className="mx-auto max-w-3xl pt-8">
           {messages.map((m, i) => (
             <Message key={i} message={m} status={status} />
           ))}
@@ -40,7 +40,7 @@ export const Messages = ({
       </div>
       {(status === "ready" || status === "error") && messages.length > 0 && (
         <TooltipProvider delayDuration={0}>
-          <div className="flex justify-center mt-4">
+          <div className="mt-4 flex justify-center">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -63,7 +63,7 @@ export const Messages = ({
           <ScrollButton
             onClick={scrollToBottom}
             alignment="center"
-            className="rounded-full shadow-lg hover:bg-muted"
+            className="hover:bg-muted rounded-full shadow-lg"
           />
         )}
       </div>
