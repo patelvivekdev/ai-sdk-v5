@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import useChatStore from "@/hooks/useChatStore";
+import useChatStore from "@/hooks/use-chat-store";
 import Chat from "@/components/chat";
 import { UIMessage } from "ai";
 import Loading from "./loading";

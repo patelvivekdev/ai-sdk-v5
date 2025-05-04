@@ -1,4 +1,4 @@
-import { Message } from "ai";
+import { UIMessage } from "ai";
 import { create } from "zustand";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ChatSession, db } from "@/lib/db";
@@ -10,8 +10,8 @@ interface State {
 interface Actions {
   setSelectedModel: (selectedModel: string) => void;
   getChatById: (chatId: string) => Promise<ChatSession | undefined>;
-  getMessagesById: (chatId: string) => Promise<Message[]>;
-  saveMessages: (chatId: string, messages: Message[]) => Promise<void>;
+  getMessagesById: (chatId: string) => Promise<UIMessage[]>;
+  saveMessages: (chatId: string, messages: UIMessage[]) => Promise<void>;
   handleDelete: (chatId: string, messageId?: string) => Promise<void>;
 }
 

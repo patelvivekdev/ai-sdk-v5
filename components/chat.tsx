@@ -10,7 +10,7 @@ import { MODELS } from "./model-picker";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ReasoningLevel } from "./reasoning-selector";
-import useChatStore from "@/hooks/useChatStore";
+import useChatStore from "@/hooks/use-chat-store";
 import { Header } from "./header";
 import { ChatRequestOptions } from "ai";
 

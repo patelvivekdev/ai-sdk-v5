@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
-import useChatStore from "@/hooks/useChatStore";
+import useChatStore from "@/hooks/use-chat-store";
 
 interface InputProps {
   chatId: string;

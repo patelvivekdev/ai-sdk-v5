@@ -39,7 +39,6 @@ export const MODELS: Record<modelID, ModelOption> = {
     vision: true,
     reasoning: true,
   },
-
   "gemini-2.5-pro": {
     id: "gemini-2.5-pro",
     name: "Gemini 2.5 Pro",

@@ -20,7 +20,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import useChatStore, { useChats } from "@/hooks/useChatStore";
+import useChatStore, { useChats } from "@/hooks/use-chat-store";
 
 export function ChatSidebar() {
   const router = useRouter();

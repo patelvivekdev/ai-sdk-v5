@@ -1,9 +1,9 @@
 import Dexie, { Table } from "dexie";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 
 export interface ChatSession {
   id: string;
-  messages: Message[];
+  messages: UIMessage[];
   createdAt: string;
 }
 
