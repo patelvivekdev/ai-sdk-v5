@@ -19,7 +19,7 @@ export const model = customProvider({
     "gemini-2.0-flash": google("gemini-2.0-flash"),
     "gemini-2.5-flash": google("gemini-2.5-flash-preview-04-17"),
     "gemini-2.5-flash-thinking": google1("gemini-2.5-flash-preview-04-17"),
-    "gemini-2.5-pro": google2("gemini-2.5-pro-exp-03-25"),
+    "gemini-2.5-pro": google2("gemini-2.5-pro-preview-05-06"),
   },
 });
 
