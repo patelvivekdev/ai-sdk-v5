@@ -139,33 +139,18 @@ export function ChatSidebar() {
                                 )}
                               />
                               {!isCollapsed && (
-                                <TooltipProvider delayDuration={0}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <span
-                                        className={cn(
-                                          "ml-2 truncate text-sm",
-                                          pathname === `/c/${chat.id}`
-                                            ? "text-foreground font-medium"
-                                            : "text-foreground/80",
-                                        )}
-                                      >
-                                        {chat.messages[0].parts[0].type ===
-                                        "text"
-                                          ? chat.messages[0].parts[0].text
-                                          : ""}
-                                      </span>
-                                    </TooltipTrigger>
-                                    <TooltipContent
-                                      className="z-100"
-                                      side="right"
-                                    >
-                                      {chat.messages[0].parts[0].type === "text"
-                                        ? chat.messages[0].parts[0].text
-                                        : ""}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                                <span
+                                  className={cn(
+                                    "ml-2 truncate text-sm",
+                                    pathname === `/c/${chat.id}`
+                                      ? "text-foreground font-medium"
+                                      : "text-foreground/80",
+                                  )}
+                                >
+                                  {chat.messages[0].parts[0].type === "text"
+                                    ? chat.messages[0].parts[0].text
+                                    : ""}
+                                </span>
                               )}
                             </div>
                             <Button
