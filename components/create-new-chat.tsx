@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CreateNewChatButton() {
   return (
@@ -19,11 +20,10 @@ export function CreateNewChatButton() {
             className={cn("rounded-2xl")}
             asChild
           >
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <PlusCircle className="size-5" />
               <span>new chat</span>
-            </a>
+            </Link>
           </Button>
         </TooltipTrigger>
         <TooltipContent>Create a new chat</TooltipContent>

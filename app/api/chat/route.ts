@@ -64,6 +64,9 @@ export async function POST(req: Request) {
           ],
         } satisfies GoogleGenerativeAIProviderOptions,
       },
+      onError: (error) => {
+        console.error("Error in streamText:", error);
+      },
     });
 
     return result.toUIMessageStreamResponse({

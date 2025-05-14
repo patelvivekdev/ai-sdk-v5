@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ChatSidebar } from "@/components/sidebar/chat-sidebar";
+import { Header } from "@/components/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,10 @@ export default function RootLayout({
         <Providers>
           <div className="flex h-dvh w-full">
             <ChatSidebar />
-            <main className="flex h-dvh flex-1 flex-col">{children}</main>
+            <main className="flex h-dvh flex-1 flex-col">
+              <Header />
+              {children}
+            </main>
           </div>
         </Providers>
       </body>

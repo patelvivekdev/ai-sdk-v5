@@ -1,8 +1,8 @@
-"use client";
-
 import Chat from "@/components/chat";
 
-export default function Page() {
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
   const chatId = crypto.randomUUID();
-  return <Chat chatId={chatId} initialMessages={[]} />;
+  return <Chat key={chatId} chatId={chatId} initialMessages={[]} />;
 }
