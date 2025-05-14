@@ -24,10 +24,12 @@ import {
 } from "./ui/tooltip";
 import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
 import useChatStore from "@/hooks/use-chat-store";
+import { zodSchema } from "@ai-sdk/provider-utils";
+import { ExampleMetadata, exampleMetadataSchema } from "@/ai/metadata-schema";
 
 interface InputProps {
   chatId: string;
-  initialMessages: UIMessage[];
+  initialMessages: UIMessage<ExampleMetadata>[];
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
   activeSearchButton: "none" | "search";
@@ -58,12 +60,13 @@ export const ChatInput = ({
   const { input, handleInputChange, handleSubmit, status, stop } = useChat({
     id: chatId,
     initialMessages: initialMessages,
+    messageMetadataSchema: zodSchema(exampleMetadataSchema),
     body: {
       selectedModel: selectedModel.id,
       search: activeSearchButton === "search",
       reasoningLevel: reasoningLevel,
     },
-    onFinish: async (message) => {
+    onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
       const savedMessages = await getMessagesById(chatId);
       saveMessages(chatId, [...savedMessages, message]);
     },
@@ -180,11 +183,12 @@ export const ChatInput = ({
 
   const submitForm = useCallback(async () => {
     window.history.replaceState({}, "", `/c/${chatId}`);
-    const userMessage: UIMessage = {
+    const userMessage: UIMessage<ExampleMetadata> = {
       id: generateId(),
       role: "user",
-      content: input,
-      createdAt: new Date(),
+      metadata: {
+        createdAt: Date.now(),
+      },
       parts: [
         {
           type: "text",

@@ -2,6 +2,7 @@ import { UIMessage } from "ai";
 import { create } from "zustand";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ChatSession, db } from "@/lib/db";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 interface State {
   selectedModel: string | null;
@@ -10,8 +11,11 @@ interface State {
 interface Actions {
   setSelectedModel: (selectedModel: string) => void;
   getChatById: (chatId: string) => Promise<ChatSession | undefined>;
-  getMessagesById: (chatId: string) => Promise<UIMessage[]>;
-  saveMessages: (chatId: string, messages: UIMessage[]) => Promise<void>;
+  getMessagesById: (chatId: string) => Promise<UIMessage<ExampleMetadata>[]>;
+  saveMessages: (
+    chatId: string,
+    messages: UIMessage<ExampleMetadata>[],
+  ) => Promise<void>;
   handleDelete: (chatId: string, messageId?: string) => Promise<void>;
 }
 

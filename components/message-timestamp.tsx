@@ -1,29 +1,24 @@
 import { cn } from "@/lib/utils";
-import { UIMessage } from "ai";
 import { memo } from "react";
 
 function PureTimeStamp({
-  message,
+  id,
   formattedTime,
   isUser,
 }: {
-  message: UIMessage;
+  id: string;
   formattedTime: string;
   isUser: boolean;
 }) {
   // Convert string timestamp to Date object for ISO string if needed
-  const dateTime = message.createdAt
-    ? typeof message.createdAt === "string"
-      ? message.createdAt
-      : message.createdAt.toISOString()
-    : undefined;
+  const dateTime = formattedTime;
 
   return (
     <time
-      key={message.id}
+      key={id}
       dateTime={dateTime}
       className={cn(
-        "block px-1 text-xs opacity-50",
+        "text-muted-foreground block px-1",
         "animate-in fade-in-0 duration-500",
         isUser && "text-right",
       )}
@@ -34,8 +29,7 @@ function PureTimeStamp({
 }
 
 export const TimeStamp = memo(PureTimeStamp, (prevProps, nextProps) => {
-  if (prevProps.message.id !== nextProps.message.id) return false;
-  if (prevProps.message.createdAt !== nextProps.message.createdAt) return false;
+  if (prevProps.id !== nextProps.id) return false;
 
   return true;
 });

@@ -1,9 +1,10 @@
 import Dexie, { Table } from "dexie";
 import { UIMessage } from "ai";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 export interface ChatSession {
   id: string;
-  messages: UIMessage[];
+  messages: UIMessage<ExampleMetadata>[];
   createdAt: string;
 }
 

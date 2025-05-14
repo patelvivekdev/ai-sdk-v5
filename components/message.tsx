@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { AttachmentPreview } from "./file-preview";
 import { cx } from "class-variance-authority";
 import { MessageActions } from "./message-actions";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 interface ReasoningPart {
   type: "reasoning";
@@ -188,11 +189,12 @@ const PurePreviewMessage = ({
   message,
   status,
 }: {
-  message: UIMessage;
+  message: UIMessage<ExampleMetadata>;
   status: "error" | "submitted" | "streaming" | "ready";
 }) => {
   const attachments = message.parts?.filter((part) => part.type === "file");
   const sources = message.parts?.filter((part) => part.type === "source");
+
   return (
     <AnimatePresence key={message.id}>
       <motion.div
@@ -210,7 +212,7 @@ const PurePreviewMessage = ({
         >
           <div className="flex w-full flex-col space-y-0.5">
             {attachments && attachments?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap justify-end-safe gap-2">
                 {attachments.map((attachment) => (
                   <AttachmentPreview
                     attachment={attachment}
@@ -260,7 +262,7 @@ const PurePreviewMessage = ({
             })}
             <MessageActions key={`action-${message.id}`} message={message} />
             {sources && sources.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="mt-1 flex flex-wrap gap-2">
                 {sources.map((source) => (
                   <SourcePreview key={source.source.id} source={source} />
                 ))}
@@ -275,9 +277,8 @@ const PurePreviewMessage = ({
 
 export const Message = memo(PurePreviewMessage, (prevProps, nextProps) => {
   if (prevProps.status !== nextProps.status) return false;
-  if (prevProps.message.annotations !== nextProps.message.annotations)
+  if (!equal(prevProps.message.metadata, nextProps.message.metadata))
     return false;
-  // if (prevProps.message.content !== nextProps.message.content) return false;
   if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
 
   return true;

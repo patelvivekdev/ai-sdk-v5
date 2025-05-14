@@ -10,18 +10,20 @@ import {
 } from "./ui/tooltip";
 import { Button } from "./ui/button";
 import { RefreshCcw } from "lucide-react";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 export const Messages = ({
   messages,
   status,
   handleReloadChat,
 }: {
-  messages: UIMessage[];
+  messages: UIMessage<ExampleMetadata>[];
   status: "error" | "submitted" | "streaming" | "ready";
   handleReloadChat: () => void;
 }) => {
   const [containerRef, showScrollButton, scrollToBottom] =
     useScrollToBottom<HTMLDivElement>();
+
   return (
     <div
       data-radix-scroll-area-viewport

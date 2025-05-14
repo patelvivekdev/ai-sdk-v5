@@ -21,6 +21,12 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import useChatStore, { useChats } from "@/hooks/use-chat-store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ChatSidebar() {
   const router = useRouter();
@@ -52,7 +58,9 @@ export function ChatSidebar() {
   return (
     <Sidebar className="z-51">
       <SidebarHeader className="border-border flex flex-row items-center justify-between border-b p-3">
-        <SidebarTrigger />
+        <SidebarTrigger className="block sm:hidden" />
+        <div className="hidden sm:block" />
+
         <div className="flex items-center justify-center gap-2">
           <Image
             src="/gemini.png"
@@ -96,7 +104,11 @@ export function ChatSidebar() {
                         <SidebarMenuButton
                           asChild
                           tooltip={
-                            isCollapsed ? chat.messages[0].content : undefined
+                            isCollapsed
+                              ? chat.messages[0].parts[0].type === "text"
+                                ? chat.messages[0].parts[0].text
+                                : ""
+                              : undefined
                           }
                           data-active={pathname === `/c/${chat.id}`}
                           className={cn(
@@ -127,19 +139,33 @@ export function ChatSidebar() {
                                 )}
                               />
                               {!isCollapsed && (
-                                <span
-                                  className={cn(
-                                    "ml-2 truncate text-sm",
-                                    pathname === `/c/${chat.id}`
-                                      ? "text-foreground font-medium"
-                                      : "text-foreground/80",
-                                  )}
-                                  title={chat.messages[0].content}
-                                >
-                                  {chat.messages[0].content.length > 18
-                                    ? `${chat.messages[0].content.slice(0, 18)}...`
-                                    : chat.messages[0].content}
-                                </span>
+                                <TooltipProvider delayDuration={0}>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span
+                                        className={cn(
+                                          "ml-2 truncate text-sm",
+                                          pathname === `/c/${chat.id}`
+                                            ? "text-foreground font-medium"
+                                            : "text-foreground/80",
+                                        )}
+                                      >
+                                        {chat.messages[0].parts[0].type ===
+                                        "text"
+                                          ? chat.messages[0].parts[0].text
+                                          : ""}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent
+                                      className="z-100"
+                                      side="right"
+                                    >
+                                      {chat.messages[0].parts[0].type === "text"
+                                        ? chat.messages[0].parts[0].text
+                                        : ""}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               )}
                             </div>
                             <Button

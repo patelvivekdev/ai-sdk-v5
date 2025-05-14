@@ -6,10 +6,13 @@ import useChatStore from "@/hooks/use-chat-store";
 import Chat from "@/components/chat";
 import { UIMessage } from "ai";
 import Loading from "./loading";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 export default function Page() {
   const { id } = useParams() as { id: string };
-  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
+  const [initialMessages, setInitialMessages] = useState<
+    UIMessage<ExampleMetadata>[]
+  >([]);
   const getChatById = useChatStore((state) => state.getChatById);
   const [isLoading, setIsLoading] = useState(true);
 

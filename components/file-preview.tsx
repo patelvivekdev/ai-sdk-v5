@@ -6,6 +6,12 @@ import Image from "next/image";
 import { FileUIPart } from "ai";
 import { ImageOverlay } from "./ui/image-overlay";
 import { Button } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 type AttachmentPreviewProps = {
   attachment: FileUIPart;
@@ -108,7 +114,16 @@ const GenericFilePreview = ({
           {renderFileIcon()}
         </div>
         <div className="text-muted-foreground flex w-full flex-col truncate">
-          <span className="text-sm font-medium">{attachment.filename}</span>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="truncate text-sm font-medium">
+                  {attachment.filename}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{attachment.filename}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <span className="text-xs opacity-70">
             {getFileExtension(attachment.filename).toUpperCase()} file
           </span>

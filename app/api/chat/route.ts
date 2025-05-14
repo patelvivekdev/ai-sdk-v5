@@ -1,7 +1,8 @@
 import { model, type modelID } from "@/ai/providers";
-import { streamText, type UIMessage } from "ai";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { ReasoningLevel } from "@/components/reasoning-selector";
 import { GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
@@ -24,9 +25,10 @@ export async function POST(req: Request) {
     reasoningLevel: ReasoningLevel;
   } = await req.json();
   try {
+    const startTime = performance.now();
     const result = streamText({
       model: model.languageModel(selectedModel),
-      messages,
+      messages: convertToModelMessages(messages),
       providerOptions: {
         google: {
           useSearchGrounding: search,
@@ -64,10 +66,36 @@ export async function POST(req: Request) {
       },
     });
 
-    return result.toDataStreamResponse({
+    return result.toUIMessageStreamResponse({
+      messageMetadata: ({ part }): ExampleMetadata | undefined => {
+        // send custom information to the client on start:
+        if (part.type === "start") {
+          return {
+            createdAt: Date.now(),
+            model: selectedModel,
+          };
+        }
+
+        // send additional model information on finish-step:
+        if (part.type === "finish-step") {
+          return {
+            model: selectedModel,
+          };
+        }
+
+        // when the message is finished, send additional information:
+        if (part.type === "finish") {
+          return {
+            totalTokens: part.totalUsage.totalTokens,
+            finishReason: part.finishReason,
+            duration: Number(
+              ((performance.now() - startTime) / 1000).toFixed(2),
+            ),
+          };
+        }
+      },
       sendReasoning: true,
       sendSources: true,
-      sendUsage: true,
     });
   } catch (error) {
     console.error("Error in POST request:", error);

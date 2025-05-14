@@ -13,13 +13,15 @@ import { ReasoningLevel } from "./reasoning-selector";
 import useChatStore from "@/hooks/use-chat-store";
 import { Header } from "./header";
 import { ChatRequestOptions } from "ai";
+import { ExampleMetadata, exampleMetadataSchema } from "@/ai/metadata-schema";
+import { zodSchema } from "@ai-sdk/provider-utils";
 
 export default function Chat({
   chatId,
   initialMessages,
 }: {
   chatId: string;
-  initialMessages: UIMessage[];
+  initialMessages: UIMessage<ExampleMetadata>[];
 }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
     MODELS["gemini-2.5-flash"],
@@ -47,12 +49,13 @@ export default function Chat({
   const { messages, status, reload } = useChat({
     id: chatId,
     initialMessages: initialMessages,
+    messageMetadataSchema: zodSchema(exampleMetadataSchema),
     body: {
       selectedModel: selectedModel.id,
       search: activeSearchButton === "search",
       reasoningLevel: reasoningLevel,
     },
-    onFinish: async (message) => {
+    onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
       const savedMessages = await getMessagesById(chatId);
       saveMessages(chatId, [...savedMessages, message]);
     },
