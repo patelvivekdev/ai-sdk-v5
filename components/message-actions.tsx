@@ -47,11 +47,6 @@ function PureMessageActions({
             </TooltipTrigger>
             <TooltipContent>Copy</TooltipContent>
           </Tooltip>
-          {/* <TimeStamp
-            message={message}
-            formattedTime={formattedTime}
-            isUser={true}
-          /> */}
         </div>
       </TooltipProvider>
     );

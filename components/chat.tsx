@@ -10,11 +10,12 @@ import { MODELS } from "./model-picker";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ReasoningLevel } from "./reasoning-selector";
-import useChatStore from "@/hooks/use-chat-store";
-import { Header } from "./header";
 import { ChatRequestOptions } from "ai";
 import { ExampleMetadata, exampleMetadataSchema } from "@/ai/metadata-schema";
 import { zodSchema } from "@ai-sdk/provider-utils";
+import { getMessagesById, saveMessages } from "@/hooks/use-chats";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChatSession } from "@/lib/db";
 
 export default function Chat({
   chatId,
@@ -33,8 +34,8 @@ export default function Chat({
     "none",
   );
   const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>("high");
-  const saveMessages = useChatStore((state) => state.saveMessages);
-  const getMessagesById = useChatStore((state) => state.getMessagesById);
+
+  const queryClient = useQueryClient();
 
   // Update model when activeButton changes
   useEffect(() => {
@@ -45,6 +46,18 @@ export default function Chat({
       setSelectedModel(MODELS["gemini-2.5-flash"]);
     }
   }, [activeThinkButton]);
+
+  const mutation = useMutation({
+    mutationFn: (messages: ChatSession["messages"]) =>
+      saveMessages(chatId, messages),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
+    },
+    onError: () => {
+      toast.error("Failed to save messages");
+    },
+  });
 
   const { messages, status, reload } = useChat({
     id: chatId,
@@ -57,7 +70,7 @@ export default function Chat({
     },
     onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
       const savedMessages = await getMessagesById(chatId);
-      saveMessages(chatId, [...savedMessages, message]);
+      mutation.mutate([...savedMessages, message]);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -68,7 +81,7 @@ export default function Chat({
     const updatedMessages = messages.filter(
       (message) => message.role !== "assistant",
     );
-    await saveMessages(chatId, updatedMessages);
+    mutation.mutate(updatedMessages);
     return updatedMessages;
   };
 

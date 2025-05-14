@@ -15,9 +15,9 @@ export function CreateNewChatButton() {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="default"
+            variant="outline"
             size="sm"
-            className={cn("rounded-2xl")}
+            className={cn("rounded-md")}
             asChild
           >
             <Link href="/" className="flex items-center gap-2">

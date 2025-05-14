@@ -8,11 +8,11 @@ export interface ChatSession {
   createdAt: string;
 }
 
-class ChatDatabase extends Dexie {
+export class ChatDatabase extends Dexie {
   chats!: Table<ChatSession, string>;
 
   constructor() {
-    super("ChatDatabase");
+    super("ai-sdk-v5");
     this.version(1).stores({
       chats: "id, createdAt",
     });

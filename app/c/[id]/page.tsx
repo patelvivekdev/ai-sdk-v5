@@ -1,35 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import useChatStore from "@/hooks/use-chat-store";
 import Chat from "@/components/chat";
-import { UIMessage } from "ai";
-import Loading from "./loading";
-import { ExampleMetadata } from "@/ai/metadata-schema";
+import { getMessagesById } from "@/hooks/use-chats";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Page() {
   const { id } = useParams() as { id: string };
-  const [initialMessages, setInitialMessages] = useState<
-    UIMessage<ExampleMetadata>[]
-  >([]);
-  const getChatById = useChatStore((state) => state.getChatById);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchChat = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const chat = await getChatById(id);
-      setInitialMessages(chat?.messages || []);
-      setIsLoading(false);
-    };
-    fetchChat();
-  }, [getChatById, id]);
+  const { isPending, data: initialMessages } = useQuery({
+    queryKey: ["chats", id],
+    queryFn: () => getMessagesById(id),
+  });
 
-  if (isLoading) {
+  if (isPending) {
     return <Loading />;
   }
 
-  return <Chat chatId={id} initialMessages={initialMessages} />;
+  return <Chat chatId={id} initialMessages={initialMessages || []} />;
+}
+
+export function Loading() {
+  return (
+    <div className="flex h-screen w-full items-center justify-center p-4">
+      <div className="flex flex-col items-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-500 dark:border-zinc-700 dark:border-t-zinc-300"></div>
+        <p className="mt-4 text-lg font-medium text-zinc-600 dark:text-zinc-400">
+          Loading chat...
+        </p>
+      </div>
+    </div>
+  );
 }

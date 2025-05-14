@@ -1,4 +1,4 @@
-import { Textarea as ShadcnTextarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowUp, Search, Brain, Paperclip } from "lucide-react";
 import { ModelOption, ModelPicker } from "./model-picker";
 import { Button } from "@/components/ui/button";
@@ -23,9 +23,11 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
-import useChatStore from "@/hooks/use-chat-store";
 import { zodSchema } from "@ai-sdk/provider-utils";
 import { ExampleMetadata, exampleMetadataSchema } from "@/ai/metadata-schema";
+import { getMessagesById, saveMessages } from "@/hooks/use-chats";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChatSession } from "@/lib/db";
 
 interface InputProps {
   chatId: string;
@@ -54,8 +56,20 @@ export const ChatInput = ({
 }: InputProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null!);
-  const saveMessages = useChatStore((state) => state.saveMessages);
-  const getMessagesById = useChatStore((state) => state.getMessagesById);
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (messages: ChatSession["messages"]) =>
+      saveMessages(chatId, messages),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
+    },
+    onError: () => {
+      toast.error("Failed to save messages");
+    },
+  });
 
   const { input, handleInputChange, handleSubmit, status, stop } = useChat({
     id: chatId,
@@ -68,7 +82,7 @@ export const ChatInput = ({
     },
     onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
       const savedMessages = await getMessagesById(chatId);
-      saveMessages(chatId, [...savedMessages, message]);
+      mutation.mutate([...savedMessages, message]);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -210,17 +224,17 @@ export const ChatInput = ({
       files: attachment ? [attachment] : [],
     });
     const messages = await getMessagesById(chatId);
-    saveMessages(chatId, [...messages, userMessage]);
+    mutation.mutate([...messages, userMessage]);
     setAttachment(undefined);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, [attachment, handleSubmit, chatId, getMessagesById, saveMessages, input]);
+  }, [attachment, handleSubmit, chatId, mutation, input]);
 
   const removeLatestMessage = async () => {
     const messages = await getMessagesById(chatId);
     const updatedMessages = messages.slice(0, -1);
-    saveMessages(chatId, updatedMessages);
+    mutation.mutate(updatedMessages);
     return updatedMessages;
   };
 
@@ -256,7 +270,7 @@ export const ChatInput = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <ShadcnTextarea
+        <Textarea
           className="w-full resize-none border-0 border-none p-2 shadow-none focus-visible:ring-0 focus-visible:outline-none"
           value={input}
           ref={textareaRef}

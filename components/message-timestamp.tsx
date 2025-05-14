@@ -10,16 +10,12 @@ function PureTimeStamp({
   formattedTime: string;
   isUser: boolean;
 }) {
-  // Convert string timestamp to Date object for ISO string if needed
-  const dateTime = formattedTime;
-
   return (
     <time
       key={id}
-      dateTime={dateTime}
+      dateTime={formattedTime}
       className={cn(
-        "text-muted-foreground block px-1",
-        "animate-in fade-in-0 duration-500",
+        "text-muted-foreground block px-1 text-sm",
         isUser && "text-right",
       )}
     >
