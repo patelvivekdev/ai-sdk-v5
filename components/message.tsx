@@ -2,8 +2,7 @@
 
 import type { UIMessage } from "ai";
 import { AnimatePresence, motion } from "motion/react";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import equal from "fast-deep-equal";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MarkdownContent } from "./markdown";
 import { cn } from "@/lib/utils";
@@ -185,7 +184,7 @@ export function ReasoningMessagePart({
   );
 }
 
-const PurePreviewMessage = ({
+export const Message = ({
   message,
   status,
 }: {
@@ -266,7 +265,7 @@ const PurePreviewMessage = ({
               id={message.id}
               role={message.role}
               metadata={message.metadata}
-              content={textParts?.map((part) => part.text).join("\n")}
+              content={textParts?.map((part) => part.text).join("\n") || ""}
             />
             {sources && sources.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-2">
@@ -281,15 +280,6 @@ const PurePreviewMessage = ({
     </AnimatePresence>
   );
 };
-
-export const Message = memo(PurePreviewMessage, (prevProps, nextProps) => {
-  if (prevProps.status !== nextProps.status) return false;
-  if (!equal(prevProps.message.metadata, nextProps.message.metadata))
-    return false;
-  if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
-
-  return true;
-});
 
 export const ThinkingMessage = () => {
   const role = "assistant";

@@ -73,16 +73,9 @@ export async function POST(req: Request) {
     return result.toUIMessageStreamResponse({
       messageMetadata: ({ part }): ExampleMetadata | undefined => {
         // send custom information to the client on start:
-        if (part.type === "start") {
+        if (part.type === "start-step") {
           return {
             createdAt: Date.now(),
-            model: selectedModel,
-          };
-        }
-
-        // send additional model information on finish-step:
-        if (part.type === "finish-step") {
-          return {
             model: selectedModel,
           };
         }

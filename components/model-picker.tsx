@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { BrainCog, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -34,7 +34,7 @@ export const MODELS: Record<modelID, ModelOption> = {
   },
   "gemini-2.5-flash-thinking": {
     id: "gemini-2.5-flash-thinking",
-    name: "Gemini 2.5 Flash (Thinking)",
+    name: "Gemini 2.5 Flash",
     vision: true,
     reasoning: true,
   },
@@ -64,6 +64,11 @@ export const ModelPicker = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-2xl">
+          {selectedModel.reasoning && (
+            <span className="text-muted-foreground text-xs">
+              <BrainCog className="h-4 w-4" />
+            </span>
+          )}
           {selectedModel.name}
           <ChevronDown className="h-4 w-4" />
         </Button>
@@ -81,6 +86,7 @@ export const ModelPicker = ({
               )}
             >
               <span className="text-sm">{model.name}</span>
+              {model.reasoning && <span className="text-xs">(Thinking)</span>}
             </DropdownMenuItem>
           ))}
         </div>

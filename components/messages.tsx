@@ -36,9 +36,7 @@ export const Messages = ({
           ))}
         </div>
 
-        {(status === "submitted" || status === "streaming") &&
-          messages.length > 0 &&
-          messages[messages.length - 1].role === "user" && <ThinkingMessage />}
+        {status === "submitted" && <ThinkingMessage />}
       </div>
       {(status === "ready" || status === "error") && messages.length > 0 && (
         <TooltipProvider delayDuration={0}>
