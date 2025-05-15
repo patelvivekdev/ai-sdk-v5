@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export interface ModelOption {
@@ -39,30 +38,24 @@ export const MODELS: Record<modelID, ModelOption> = {
     vision: true,
     reasoning: true,
   },
-  "gemini-2.5-pro": {
-    id: "gemini-2.5-pro",
-    name: "Gemini 2.5 Pro",
-    vision: true,
-    reasoning: true,
-  },
+  // "gemini-2.5-pro": {
+  //   id: "gemini-2.5-pro",
+  //   name: "Gemini 2.5 Pro",
+  //   vision: true,
+  //   reasoning: true,
+  // },
 };
 
 interface ModelPickerProps {
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
-  activeThinkButton: "none" | "think";
 }
 export const ModelPicker = ({
   selectedModel,
   setSelectedModel,
-  activeThinkButton,
 }: ModelPickerProps) => {
   const getAvailableModels = () => {
-    if (activeThinkButton === "think") {
-      return Object.values(MODELS).filter((model) => model.reasoning);
-    } else {
-      return Object.values(MODELS).filter((model) => !model.reasoning);
-    }
+    return Object.values(MODELS);
   };
 
   const availableModels = getAvailableModels();
@@ -71,7 +64,6 @@ export const ModelPicker = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-2xl">
-          <Image src="/gemini.png" alt="Gemini" width={16} height={16} />
           {selectedModel.name}
           <ChevronDown className="h-4 w-4" />
         </Button>

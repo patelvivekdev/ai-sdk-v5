@@ -16,7 +16,7 @@ export function ThemeToggle() {
       type="button"
       variant="default"
       size="sm"
-      className="rounded-2xl"
+      className="rounded-md"
       onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
     >
       <svg

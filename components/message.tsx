@@ -194,6 +194,7 @@ const PurePreviewMessage = ({
 }) => {
   const attachments = message.parts?.filter((part) => part.type === "file");
   const sources = message.parts?.filter((part) => part.type === "source");
+  const textParts = message.parts?.filter((part) => part.type === "text");
 
   return (
     <AnimatePresence key={message.id}>
@@ -260,7 +261,13 @@ const PurePreviewMessage = ({
                   return null;
               }
             })}
-            <MessageActions key={`action-${message.id}`} message={message} />
+            <MessageActions
+              key={`action-${message.id}`}
+              id={message.id}
+              role={message.role}
+              metadata={message.metadata}
+              content={textParts?.map((part) => part.text).join("\n")}
+            />
             {sources && sources.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-2">
                 {sources.map((source) => (

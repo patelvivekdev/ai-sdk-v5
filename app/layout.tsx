@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI SDK Gemini",
-  description: "This demo uses Google Gemini LLM with the AI SDK",
-  keywords: "Google, Gemini, AI, AI SDK, Vercel",
+  title: "AI SDK V5",
+  description: "This demo uses the latest version of the AI SDK V5",
+  keywords: "AI, AI SDK, Vercel, Gemini, Google",
 };
 
 export default function RootLayout({
