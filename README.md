@@ -1,3 +1,3 @@
-## AI SDK + Google Gemini
+## AI SDK v5
 
-This repository contains a simple example of how to use the AI SDK with Google Gemini.
+Demo of the latest version of the AI SDK.

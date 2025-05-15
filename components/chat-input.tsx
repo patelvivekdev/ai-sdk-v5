@@ -1,5 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowUp, Search, Brain, Paperclip } from "lucide-react";
+import { ArrowUp, Search, Paperclip } from "lucide-react";
 import { ModelOption, ModelPicker } from "./model-picker";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,8 +45,6 @@ interface InputProps {
   setSelectedModel: (model: ModelOption) => void;
   activeSearchButton: "none" | "search";
   setActiveSearchButton: Dispatch<SetStateAction<"none" | "search">>;
-  activeThinkButton: "none" | "think";
-  setActiveThinkButton: Dispatch<SetStateAction<"none" | "think">>;
   reasoningLevel: ReasoningLevel;
   setReasoningLevel: (level: ReasoningLevel) => void;
 }
@@ -62,8 +60,6 @@ export const ChatInput = ({
   setSelectedModel,
   activeSearchButton,
   setActiveSearchButton,
-  activeThinkButton,
-  setActiveThinkButton,
   reasoningLevel,
   setReasoningLevel,
 }: InputProps) => {
@@ -253,7 +249,6 @@ export const ChatInput = ({
           <ModelPicker
             setSelectedModel={setSelectedModel}
             selectedModel={selectedModel}
-            activeThinkButton={activeThinkButton}
           />
         </div>
       </div>
@@ -287,7 +282,6 @@ export const ChatInput = ({
             ) : (
               <div></div>
             )}
-            {/* Utility buttons */}
             <Button
               type="button"
               onClick={() => {
@@ -301,20 +295,6 @@ export const ChatInput = ({
               <Search className="size-4" />
               <span className="text-xs">Search</span>
             </Button>
-            <Button
-              type="button"
-              onClick={() => {
-                setActiveThinkButton(
-                  activeThinkButton === "think" ? "none" : "think",
-                );
-              }}
-              variant={activeThinkButton === "think" ? "default" : "outline"}
-              className="rounded-2xl"
-            >
-              <Brain className="size-4" />
-              <span className="text-xs">Think</span>
-            </Button>
-            {/* Only show reasoning selector when gemini-2.5-thinking is selected */}
             {selectedModel.id === "gemini-2.5-flash-thinking" && (
               <ReasoningSelector
                 reasoningLevel={reasoningLevel}
@@ -322,7 +302,6 @@ export const ChatInput = ({
               />
             )}
           </div>
-          {/* Right side - Submit/Stop button */}
           {isLoading ? (
             <Button
               type="button"
