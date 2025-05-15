@@ -1,5 +1,3 @@
-import { UIMessage } from "ai";
-
 import {
   Tooltip,
   TooltipContent,
@@ -16,18 +14,23 @@ import { modelID } from "@/ai/providers";
 import { Separator } from "./ui/separator";
 
 function PureMessageActions({
-  message,
+  id,
+  role,
+  metadata,
+  content,
 }: {
-  message: UIMessage<ExampleMetadata>;
+  id: string;
+  role: "user" | "assistant" | "system";
+  metadata: ExampleMetadata | undefined;
+  content: string;
 }) {
-  const parts = message.parts?.filter((part) => part.type === "text");
   let formattedTime = "";
-  if (message.metadata?.createdAt) {
+  if (metadata?.createdAt) {
     // Convert number timestamp to Date object if it's a number
     const timestamp =
-      typeof message.metadata.createdAt === "number"
-        ? new Date(message.metadata.createdAt)
-        : message.metadata.createdAt;
+      typeof metadata.createdAt === "number"
+        ? new Date(metadata.createdAt)
+        : metadata.createdAt;
 
     formattedTime = timestamp.toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -35,15 +38,13 @@ function PureMessageActions({
     });
   }
 
-  if (message.role === "user") {
+  if (role === "user") {
     return (
       <TooltipProvider delayDuration={0}>
         <div className="flex flex-row items-center justify-end gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <CopyButton
-                content={parts?.map((part) => part.text).join("\n") || ""}
-              />
+              <CopyButton content={content} />
             </TooltipTrigger>
             <TooltipContent>Copy</TooltipContent>
           </Tooltip>
@@ -57,32 +58,25 @@ function PureMessageActions({
       <div className="flex flex-row items-center gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <CopyButton
-              content={parts?.map((part) => part.text).join("\n") || ""}
-            />
+            <CopyButton content={content} />
           </TooltipTrigger>
           <TooltipContent>Copy</TooltipContent>
         </Tooltip>
-        <TimeStamp
-          id={message.id}
-          formattedTime={formattedTime}
-          isUser={false}
-        />
-        {message.metadata?.duration && (
+        <TimeStamp id={id} formattedTime={formattedTime} isUser={false} />
+        {metadata?.duration && (
           <>
             <Separator orientation="vertical" />
             <p className="text-muted-foreground">
-              Duration: {message.metadata?.duration} s
+              Duration: {metadata.duration} s
             </p>
           </>
         )}
-        {message.metadata?.finishReason == "stop" && (
+        {metadata?.finishReason == "stop" && (
           <>
             <Separator orientation="vertical" />
             <p className="text-muted-foreground flex flex-row items-center gap-2">
               Generated with{" "}
-              {message.metadata?.model &&
-                MODELS[message.metadata.model as modelID].name}
+              {metadata?.model && MODELS[metadata.model as modelID].name}
             </p>
           </>
         )}
@@ -94,11 +88,9 @@ function PureMessageActions({
 export const MessageActions = memo(
   PureMessageActions,
   (prevProps, nextProps) => {
-    if (prevProps.message.id !== nextProps.message.id) return false;
-    if (prevProps.message.role !== nextProps.message.role) return false;
-    if (!equal(prevProps.message.metadata, nextProps.message.metadata))
-      return false;
-    if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
+    if (prevProps.id !== nextProps.id) return false;
+    if (prevProps.role !== nextProps.role) return false;
+    if (!equal(prevProps.metadata, nextProps.metadata)) return false;
 
     return true;
   },

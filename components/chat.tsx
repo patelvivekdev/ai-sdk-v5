@@ -16,6 +16,7 @@ import { zodSchema } from "@ai-sdk/provider-utils";
 import { getMessagesById, saveMessages } from "@/hooks/use-chats";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChatSession } from "@/lib/db";
+import { defaultChatStore } from "ai";
 
 export default function Chat({
   chatId,
@@ -25,7 +26,7 @@ export default function Chat({
   initialMessages: UIMessage<ExampleMetadata>[];
 }) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(
-    MODELS["gemini-2.5-flash"],
+    MODELS["gemini-2.0-flash"],
   );
   const [activeSearchButton, setActiveSearchButton] = useState<
     "none" | "search"
@@ -43,7 +44,7 @@ export default function Chat({
       // Always set a default thinking model when switching to think mode
       setSelectedModel(MODELS["gemini-2.5-flash-thinking"]);
     } else {
-      setSelectedModel(MODELS["gemini-2.5-flash"]);
+      setSelectedModel(MODELS["gemini-2.0-flash"]);
     }
   }, [activeThinkButton]);
 
@@ -51,23 +52,30 @@ export default function Chat({
     mutationFn: (messages: ChatSession["messages"]) =>
       saveMessages(chatId, messages),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chats"] });
-      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chat", chatId] });
     },
     onError: () => {
       toast.error("Failed to save messages");
     },
   });
 
-  const { messages, status, reload } = useChat({
+  const {
+    messages,
+    status,
+    reload,
+    input,
+    handleInputChange,
+    handleSubmit,
+    stop,
+  } = useChat({
     id: chatId,
-    initialMessages: initialMessages,
-    messageMetadataSchema: zodSchema(exampleMetadataSchema),
-    body: {
-      selectedModel: selectedModel.id,
-      search: activeSearchButton === "search",
-      reasoningLevel: reasoningLevel,
-    },
+    chatStore: defaultChatStore({
+      api: "/api/chat",
+      messageMetadataSchema: zodSchema(exampleMetadataSchema),
+      chats: chatId
+        ? { [chatId]: { messages: initialMessages ?? [] } }
+        : undefined,
+    }),
     onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
       const savedMessages = await getMessagesById(chatId);
       mutation.mutate([...savedMessages, message]);
@@ -77,16 +85,15 @@ export default function Chat({
     },
   });
 
-  const removeLatestAssistantMessage = async () => {
-    const updatedMessages = messages.filter(
-      (message) => message.role !== "assistant",
-    );
+  const removeLastLatestAssistantMessage = async () => {
+    const messages = await getMessagesById(chatId);
+    const updatedMessages = messages.slice(0, -1);
     mutation.mutate(updatedMessages);
     return updatedMessages;
   };
 
   const handleReloadChat = async () => {
-    await removeLatestAssistantMessage();
+    await removeLastLatestAssistantMessage();
     const requestOptions: ChatRequestOptions = {
       body: {
         selectedModel: selectedModel.id,
@@ -96,7 +103,6 @@ export default function Chat({
     };
     reload(requestOptions);
   };
-
   return (
     <div className="stretch flex h-dvh w-full flex-col justify-center">
       {messages.length === 0 ? (
@@ -118,7 +124,11 @@ export default function Chat({
       >
         <ChatInput
           chatId={chatId}
-          initialMessages={initialMessages}
+          input={input}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          status={status}
+          stop={stop}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
           activeSearchButton={activeSearchButton}

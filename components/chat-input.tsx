@@ -11,10 +11,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { generateId, UIMessage, FileUIPart } from "ai";
+import { generateId, UIMessage, FileUIPart, ChatRequestOptions } from "ai";
 import { useAutosizeTextArea } from "@/hooks/use-autosize-textarea";
 import { toast } from "sonner";
-import { useChat } from "@ai-sdk/react";
 import { AttachmentPreview } from "./file-preview";
 import {
   Tooltip,
@@ -23,15 +22,25 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { ReasoningLevel, ReasoningSelector } from "./reasoning-selector";
-import { zodSchema } from "@ai-sdk/provider-utils";
-import { ExampleMetadata, exampleMetadataSchema } from "@/ai/metadata-schema";
+import { ExampleMetadata } from "@/ai/metadata-schema";
 import { getMessagesById, saveMessages } from "@/hooks/use-chats";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChatSession } from "@/lib/db";
 
 interface InputProps {
   chatId: string;
-  initialMessages: UIMessage<ExampleMetadata>[];
+  input: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleSubmit: (
+    event?: {
+      preventDefault?: () => void;
+    },
+    chatRequestOptions?: ChatRequestOptions & {
+      files?: FileList | FileUIPart[];
+    },
+  ) => void;
+  status: "submitted" | "streaming" | "ready" | "error";
+  stop: () => void;
   selectedModel: ModelOption;
   setSelectedModel: (model: ModelOption) => void;
   activeSearchButton: "none" | "search";
@@ -44,7 +53,11 @@ interface InputProps {
 
 export const ChatInput = ({
   chatId,
-  initialMessages,
+  input,
+  handleInputChange,
+  handleSubmit,
+  status,
+  stop,
   selectedModel,
   setSelectedModel,
   activeSearchButton,
@@ -64,28 +77,10 @@ export const ChatInput = ({
       saveMessages(chatId, messages),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chats"] });
-      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
+      // queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
     },
     onError: () => {
       toast.error("Failed to save messages");
-    },
-  });
-
-  const { input, handleInputChange, handleSubmit, status, stop } = useChat({
-    id: chatId,
-    initialMessages: initialMessages,
-    messageMetadataSchema: zodSchema(exampleMetadataSchema),
-    body: {
-      selectedModel: selectedModel.id,
-      search: activeSearchButton === "search",
-      reasoningLevel: reasoningLevel,
-    },
-    onFinish: async ({ message }: { message: UIMessage<ExampleMetadata> }) => {
-      const savedMessages = await getMessagesById(chatId);
-      mutation.mutate([...savedMessages, message]);
-    },
-    onError: (error) => {
-      toast.error(error.message);
     },
   });
 
@@ -221,6 +216,11 @@ export const ChatInput = ({
       ],
     };
     handleSubmit(undefined, {
+      body: {
+        selectedModel: selectedModel.id,
+        search: activeSearchButton === "search",
+        reasoningLevel: reasoningLevel,
+      },
       files: attachment ? [attachment] : [],
     });
     const messages = await getMessagesById(chatId);
@@ -230,18 +230,6 @@ export const ChatInput = ({
       fileInputRef.current.value = "";
     }
   }, [attachment, handleSubmit, chatId, mutation, input]);
-
-  const removeLatestMessage = async () => {
-    const messages = await getMessagesById(chatId);
-    const updatedMessages = messages.slice(0, -1);
-    mutation.mutate(updatedMessages);
-    return updatedMessages;
-  };
-
-  const handleStop = async () => {
-    stop();
-    await removeLatestMessage();
-  };
 
   return (
     <div className="relative w-full">
@@ -338,7 +326,7 @@ export const ChatInput = ({
           {isLoading ? (
             <Button
               type="button"
-              onClick={handleStop}
+              onClick={stop}
               size="icon"
               className="cursor-pointer rounded-2xl"
             >
