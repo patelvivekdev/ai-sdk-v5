@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
 import {
   Tooltip,
@@ -14,12 +13,7 @@ export function CreateNewChatButton() {
     <TooltipProvider delayDuration={0}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn("rounded-md")}
-            asChild
-          >
+          <Button variant="default" size="sm" className="rounded-md" asChild>
             <Link href="/" className="flex items-center gap-2">
               <PlusCircle className="size-5" />
               <span>new chat</span>

@@ -1,15 +1,15 @@
 "use client";
-import { Brain, BrainCog } from "lucide-react";
+import { BrainCog } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-export type ReasoningLevel = "low" | "high";
+export type ReasoningLevel = "low" | "medium" | "high";
 
 interface ReasoningSelectorProps {
   reasoningLevel: ReasoningLevel;
@@ -29,24 +29,14 @@ export function ReasoningSelector({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          onClick={() => setReasoningLevel("low")}
-          className={cn(
-            reasoningLevel === "low" &&
-              "bg-primary text-primary-foreground hover:bg-primary! hover:text-primary-foreground!",
-          )}
+        <DropdownMenuRadioGroup
+          value={reasoningLevel}
+          onValueChange={(value) => setReasoningLevel(value as ReasoningLevel)}
         >
-          <Brain className="mr-2 size-4 text-current" /> Low
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => setReasoningLevel("high")}
-          className={cn(
-            reasoningLevel === "high" &&
-              "bg-primary text-primary-foreground hover:bg-primary! hover:text-primary-foreground!",
-          )}
-        >
-          <Brain className="mr-2 size-4 text-current" /> High
-        </DropdownMenuItem>
+          <DropdownMenuRadioItem value="low">Low</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="medium">Medium</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="high">High</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { UIMessage, useChat } from "@ai-sdk/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ProjectOverview } from "./project-overview";
 import { Messages } from "@/components/messages";
 import { ChatInput } from "./chat-input";
@@ -30,22 +30,9 @@ export default function Chat({
   const [activeSearchButton, setActiveSearchButton] = useState<
     "none" | "search"
   >("none");
-  const [activeThinkButton, setActiveThinkButton] = useState<"none" | "think">(
-    "none",
-  );
-  const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>("high");
+  const [reasoningLevel, setReasoningLevel] = useState<ReasoningLevel>("low");
 
   const queryClient = useQueryClient();
-
-  // Update model when activeButton changes
-  useEffect(() => {
-    if (activeThinkButton === "think") {
-      // Always set a default thinking model when switching to think mode
-      setSelectedModel(MODELS["gemini-2.5-flash-thinking"]);
-    } else {
-      setSelectedModel(MODELS["gemini-2.5-flash"]);
-    }
-  }, [activeThinkButton]);
 
   const mutation = useMutation({
     mutationFn: (messages: ChatSession["messages"]) =>
@@ -123,8 +110,6 @@ export default function Chat({
           setSelectedModel={setSelectedModel}
           activeSearchButton={activeSearchButton}
           setActiveSearchButton={setActiveSearchButton}
-          activeThinkButton={activeThinkButton}
-          setActiveThinkButton={setActiveThinkButton}
           reasoningLevel={reasoningLevel}
           setReasoningLevel={setReasoningLevel}
         />

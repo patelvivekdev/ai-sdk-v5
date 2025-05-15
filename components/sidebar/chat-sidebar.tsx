@@ -23,7 +23,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -144,18 +143,8 @@ export function ChatSidebar() {
           <SidebarTrigger className="block sm:hidden" />
           <div className="hidden sm:block" />
 
-          <div className="flex items-center justify-center gap-2">
-            <Image
-              src="/gemini.png"
-              alt="Gemini Logo"
-              width={24}
-              height={24}
-              unoptimized
-              quality={100}
-            />
-            <div className="text-foreground/90 text-lg font-semibold">
-              AISDK + Gemini
-            </div>
+          <div className="text-foreground/90 text-lg font-semibold">
+            AISDK V5 Demo
           </div>
         </SidebarHeader>
         <Separator />

@@ -8,7 +8,8 @@ import { ExampleMetadata } from "@/ai/metadata-schema";
 export const maxDuration = 60;
 
 const REASONING_LEVEL_MAP = {
-  low: 15000,
+  low: 7000,
+  medium: 15000,
   high: 24576,
 };
 
