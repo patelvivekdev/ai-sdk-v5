@@ -72,11 +72,17 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse({
       messageMetadata: ({ part }): ExampleMetadata | undefined => {
-        // when the message is finished, send additional information:
-        if (part.type === "finish") {
+        // send custom information to the client on start:
+        if (part.type === "start-step") {
           return {
             createdAt: Date.now(),
             model: selectedModel,
+          };
+        }
+
+        // when the message is finished, send additional information:
+        if (part.type === "finish") {
+          return {
             totalTokens: part.totalUsage.totalTokens,
             finishReason: part.finishReason,
             duration: Number(

@@ -260,15 +260,13 @@ export const Message = ({
                   return null;
               }
             })}
-            {status === "ready" && (
-              <MessageActions
-                key={`action-${message.id}`}
-                id={message.id}
-                role={message.role}
-                metadata={message.metadata}
-                content={textParts?.map((part) => part.text).join("\n") || ""}
-              />
-            )}
+            <MessageActions
+              key={`action-${message.id}`}
+              id={message.id}
+              role={message.role}
+              metadata={message.metadata}
+              content={textParts?.map((part) => part.text).join("\n") || ""}
+            />
             {sources && sources.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-2">
                 {sources.map((source) => (
