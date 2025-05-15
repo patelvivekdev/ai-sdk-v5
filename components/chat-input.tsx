@@ -225,7 +225,16 @@ export const ChatInput = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, [attachment, handleSubmit, chatId, mutation, input]);
+  }, [
+    attachment,
+    handleSubmit,
+    chatId,
+    mutation,
+    input,
+    reasoningLevel,
+    selectedModel.id,
+    activeSearchButton,
+  ]);
 
   return (
     <div className="relative w-full">
