@@ -150,7 +150,9 @@ export function ChatSidebar() {
         <Separator />
         <SidebarContent>
           <SidebarGroup className="h-full">
-            <SidebarGroupLabel>Chats</SidebarGroupLabel>
+            <SidebarGroupLabel className="px-2 py-1 text-sm font-semibold select-none">
+              Previous Chats
+            </SidebarGroupLabel>
             <SidebarGroupContent className="flex h-[calc(100%-2rem)] flex-col">
               {isPending ? (
                 <div className="flex h-full flex-col items-center justify-center gap-3 px-3 text-center">
@@ -179,7 +181,7 @@ export function ChatSidebar() {
                     {Object.entries(groupedChats).map(([section, chats]) =>
                       chats.length > 0 ? (
                         <div key={section} className="mb-2">
-                          <div className="text-muted-foreground px-3 py-1 text-xs font-semibold select-none">
+                          <div className="text-muted-foreground px-2 py-1 text-xs font-semibold select-none">
                             {section}
                           </div>
                           {chats.map((chat) => (
@@ -224,18 +226,10 @@ export function ChatSidebar() {
                                     }}
                                   >
                                     <div className="flex min-w-0 flex-1 items-center overflow-hidden pr-2">
-                                      <MessageSquare
-                                        className={cn(
-                                          "h-4 w-4 flex-shrink-0",
-                                          pathname === `/c/${chat.id}`
-                                            ? "text-foreground"
-                                            : "text-muted-foreground",
-                                        )}
-                                      />
                                       {!isCollapsed && (
                                         <span
                                           className={cn(
-                                            "ml-2 truncate text-sm",
+                                            "truncate text-sm",
                                             pathname === `/c/${chat.id}`
                                               ? "text-foreground font-medium"
                                               : "text-foreground/80",

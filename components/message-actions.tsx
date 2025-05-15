@@ -12,6 +12,7 @@ import { ExampleMetadata } from "@/ai/metadata-schema";
 import { MODELS } from "./model-picker";
 import { modelID } from "@/ai/providers";
 import { Separator } from "./ui/separator";
+import { BoxIcon, BrainCog } from "lucide-react";
 
 function PureMessageActions({
   id,
@@ -63,20 +64,15 @@ function PureMessageActions({
           <TooltipContent>Copy</TooltipContent>
         </Tooltip>
         <TimeStamp id={id} formattedTime={formattedTime} isUser={false} />
-        {metadata?.duration && (
-          <>
-            <Separator orientation="vertical" />
-            <p className="text-muted-foreground">
-              Duration: {metadata.duration} s
-            </p>
-          </>
-        )}
         {metadata?.finishReason == "stop" && (
           <>
             <Separator orientation="vertical" />
             <p className="text-muted-foreground flex flex-row items-center gap-2">
-              Generated with{" "}
-              {metadata?.model && MODELS[metadata.model as modelID].name}
+              <BoxIcon className="h-4 w-4" />
+              {metadata?.model && MODELS[metadata.model as modelID].name}{" "}
+              {metadata?.model &&
+                MODELS[metadata.model as modelID].reasoning &&
+                "(Thinking)"}
             </p>
           </>
         )}
