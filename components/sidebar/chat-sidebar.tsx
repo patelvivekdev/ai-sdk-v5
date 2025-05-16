@@ -1,12 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import {
-  MessageSquare,
-  MessageSquarePlus,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { MessageSquarePlus, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -195,14 +190,6 @@ export function ChatSidebar() {
                               <SidebarMenuItem>
                                 <SidebarMenuButton
                                   asChild
-                                  tooltip={
-                                    isCollapsed
-                                      ? chat.messages[0].parts[0].type ===
-                                        "text"
-                                        ? chat.messages[0].parts[0].text
-                                        : ""
-                                      : undefined
-                                  }
                                   data-active={pathname === `/c/${chat.id}`}
                                   className={cn(
                                     "hover:bg-primary/10 active:bg-primary/15 mb-1 transition-all",
@@ -235,10 +222,7 @@ export function ChatSidebar() {
                                               : "text-foreground/80",
                                           )}
                                         >
-                                          {chat.messages[0].parts[0].type ===
-                                          "text"
-                                            ? chat.messages[0].parts[0].text
-                                            : ""}
+                                          {chat.chatName}
                                         </span>
                                       )}
                                     </div>

@@ -39,7 +39,8 @@ export default function Chat({
     mutationFn: (messages: ChatSession["messages"]) =>
       saveMessages(chatId, messages),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chat", chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
     },
     onError: () => {
       toast.error("Failed to save messages");
@@ -51,9 +52,10 @@ export default function Chat({
     status,
     reload,
     input,
-    handleInputChange,
-    handleSubmit,
+    setInput,
+    setMessages,
     stop,
+    append,
   } = useChat({
     id: chatId,
     chatStore: defaultChatStore({
@@ -100,7 +102,9 @@ export default function Chat({
         <Messages
           handleReloadChat={handleReloadChat}
           messages={messages}
+          setMessages={setMessages}
           status={status}
+          chatId={chatId}
         />
       )}
       <form
@@ -112,8 +116,8 @@ export default function Chat({
         <ChatInput
           chatId={chatId}
           input={input}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
+          setInput={setInput}
+          append={append}
           status={status}
           stop={stop}
           selectedModel={selectedModel}

@@ -187,9 +187,13 @@ export function ReasoningMessagePart({
 export const Message = ({
   message,
   status,
+  setMessages,
+  chatId,
 }: {
   message: UIMessage<ExampleMetadata>;
   status: "error" | "submitted" | "streaming" | "ready";
+  setMessages: (messages: UIMessage<ExampleMetadata>[]) => void;
+  chatId: string;
 }) => {
   const attachments = message.parts?.filter((part) => part.type === "file");
   const sources = message.parts?.filter((part) => part.type === "source");
@@ -230,7 +234,10 @@ export const Message = ({
                       initial={{ y: 5, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       key={`message-${message.id}-part-${i}`}
-                      className="flex w-full flex-row items-start gap-2 pb-2"
+                      className={cn("flex w-full flex-row gap-2 pb-2", {
+                        "justify-end": message.role === "user",
+                        "justify-start": message.role === "assistant",
+                      })}
                     >
                       <div
                         className={cn("flex flex-col gap-4", {
@@ -266,6 +273,8 @@ export const Message = ({
               role={message.role}
               metadata={message.metadata}
               content={textParts?.map((part) => part.text).join("\n") || ""}
+              setMessages={setMessages}
+              chatId={chatId}
             />
             {sources && sources.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-2">

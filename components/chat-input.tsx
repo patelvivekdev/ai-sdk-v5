@@ -11,7 +11,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { generateId, UIMessage, FileUIPart, ChatRequestOptions } from "ai";
+import {
+  generateId,
+  UIMessage,
+  FileUIPart,
+  ChatRequestOptions,
+  CreateUIMessage,
+} from "ai";
 import { useAutosizeTextArea } from "@/hooks/use-autosize-textarea";
 import { toast } from "sonner";
 import { AttachmentPreview } from "./file-preview";
@@ -30,14 +36,10 @@ import { ChatSession } from "@/lib/db";
 interface InputProps {
   chatId: string;
   input: string;
-  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleSubmit: (
-    event?: {
-      preventDefault?: () => void;
-    },
-    chatRequestOptions?: ChatRequestOptions & {
-      files?: FileList | FileUIPart[];
-    },
+  setInput: Dispatch<SetStateAction<string>>;
+  append: (
+    message: CreateUIMessage<ExampleMetadata>,
+    options?: ChatRequestOptions,
   ) => void;
   status: "submitted" | "streaming" | "ready" | "error";
   stop: () => void;
@@ -52,8 +54,8 @@ interface InputProps {
 export const ChatInput = ({
   chatId,
   input,
-  handleInputChange,
-  handleSubmit,
+  setInput,
+  append,
   status,
   stop,
   selectedModel,
@@ -73,7 +75,7 @@ export const ChatInput = ({
       saveMessages(chatId, messages),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chats"] });
-      // queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
     },
     onError: () => {
       toast.error("Failed to save messages");
@@ -93,6 +95,7 @@ export const ChatInput = ({
       const attachment: Promise<FileUIPart> = new Promise((resolve, reject) => {
         reader.onload = () => {
           let mediaType = file.type;
+          let url = reader.result as string;
 
           // Handle special file types
           if (!mediaType) {
@@ -100,12 +103,24 @@ export const ChatInput = ({
             switch (extension) {
               case "pdf":
                 mediaType = "application/pdf";
+                url = url.replace(
+                  "data:application/octet-stream;base64,",
+                  "data:application/pdf;base64,",
+                );
                 break;
               case "md":
                 mediaType = "text/markdown";
+                url = url.replace(
+                  "data:application/octet-stream;base64,",
+                  "data:text/markdown;base64,",
+                );
                 break;
               case "txt":
                 mediaType = "text/plain";
+                url = url.replace(
+                  "data:application/octet-stream;base64,",
+                  "data:text/plain;base64,",
+                );
                 break;
               default:
                 mediaType = "application/octet-stream";
@@ -115,7 +130,7 @@ export const ChatInput = ({
           resolve({
             filename: file.name,
             mediaType,
-            url: reader.result as string,
+            url,
             type: "file",
           });
         };
@@ -195,10 +210,6 @@ export const ChatInput = ({
         createdAt: Date.now(),
       },
       parts: [
-        {
-          type: "text",
-          text: input,
-        },
         ...(attachment
           ? [
               {
@@ -209,15 +220,18 @@ export const ChatInput = ({
               },
             ]
           : []),
+        {
+          type: "text",
+          text: input,
+        },
       ],
     };
-    handleSubmit(undefined, {
+    append(userMessage, {
       body: {
         selectedModel: selectedModel.id,
         search: activeSearchButton === "search",
         reasoningLevel: reasoningLevel,
       },
-      files: attachment ? [attachment] : [],
     });
     const messages = await getMessagesById(chatId);
     mutation.mutate([...messages, userMessage]);
@@ -225,9 +239,10 @@ export const ChatInput = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    setInput("");
   }, [
     attachment,
-    handleSubmit,
+    append,
     chatId,
     mutation,
     input,
@@ -268,7 +283,7 @@ export const ChatInput = ({
           ref={textareaRef}
           autoFocus
           placeholder={"Say something..."}
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();

@@ -4,6 +4,7 @@ import { ExampleMetadata } from "@/ai/metadata-schema";
 
 export interface ChatSession {
   id: string;
+  chatName: string;
   messages: UIMessage<ExampleMetadata>[];
   createdAt: string;
 }
@@ -14,7 +15,7 @@ export class ChatDatabase extends Dexie {
   constructor() {
     super("ai-sdk-v5");
     this.version(1).stores({
-      chats: "id, createdAt",
+      chats: "id, chatName, createdAt",
     });
   }
 }

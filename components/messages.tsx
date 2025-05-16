@@ -16,10 +16,14 @@ export const Messages = ({
   messages,
   status,
   handleReloadChat,
+  setMessages,
+  chatId,
 }: {
   messages: UIMessage<ExampleMetadata>[];
   status: "error" | "submitted" | "streaming" | "ready";
   handleReloadChat: () => void;
+  setMessages: (messages: UIMessage<ExampleMetadata>[]) => void;
+  chatId: string;
 }) => {
   const [containerRef, showScrollButton, scrollToBottom] =
     useScrollToBottom<HTMLDivElement>();
@@ -32,7 +36,13 @@ export const Messages = ({
       <div className="space-y-4" ref={containerRef}>
         <div className="mx-auto max-w-3xl space-y-4 pt-8">
           {messages.map((m, i) => (
-            <Message key={i} message={m} status={status} />
+            <Message
+              key={i}
+              message={m}
+              status={status}
+              setMessages={setMessages}
+              chatId={chatId}
+            />
           ))}
         </div>
 
